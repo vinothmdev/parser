@@ -1,0 +1,32 @@
+{
+  "name": "parser",
+  "version": "1.0.0",
+  "description": "This is to try out a parser from scratch",
+  "main": "parser.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinothmdev/parser.git"
+  },
+  "keywords": [
+    "parser",
+    "javascript"
+  ],
+  "author": "Vinoth Marimuthu",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vinothmdev/parser/issues"
+  },
+  "homepage": "https://github.com/vinothmdev/parser#readme",
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "@types/node": "^16.4.8",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.4",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {}
+}
