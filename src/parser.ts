@@ -1,3 +1,5 @@
+import { NUMERIC_LITERAL } from "./types";
+
 /**
  * Parser : Recursive Decent Implementation
  */
@@ -26,6 +28,6 @@ export class Parser {
      *  ;
      */
     numericLiteral(): any {
-        return { type: 'NumericLiteral', value: Number(this._value) };
+        return { type: NUMERIC_LITERAL, value: Number(this._value) };
     }
 };
