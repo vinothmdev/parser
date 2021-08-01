@@ -1,3 +1,4 @@
-export const PROGRAM = 'Program';
-export const NUMERIC_LITERAL = 'NumericLiteral';
-export const STRING_LITERAL = 'StringLiteral';
+export const PROGRAM = "Program";
+export const NUMERIC_LITERAL = "NumericLiteral";
+export const STRING_LITERAL = "StringLiteral";
+export const UNDEFINED = "UNDEFINED";
