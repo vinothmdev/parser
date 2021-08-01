@@ -55,7 +55,7 @@ export class Parser {
                 type = this.stringLiteral();
                 break;
             default:
-                throw new Error("Unexpected token: " + token.type);
+                throw new Error(`unexpected token '${token.value}'`);
         }
         return type;
     }
@@ -92,9 +92,6 @@ export class Parser {
 
         if (!token) {
             throw new Error(`unexpected EOF, expected '${type}'`);
-        }
-        if (token.type !== type) {
-            throw new Error(`unexpected token '${token.value}', expected '${type}'`);
         }
 
         // Advance to the next token

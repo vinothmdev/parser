@@ -50,7 +50,7 @@ export class Tokenizer {
             while (this._input[this._index] !== '"') {
                 this._index++;
             }
-            return {type: STRING_LITERAL, value: this._input.substring(start + 1, this._index)};
+            return {type: STRING_LITERAL, value: this._input.substring(start + 1, this._index++)};
         }
 
         return null;
@@ -58,6 +58,10 @@ export class Tokenizer {
  
 }
 
+/**
+ * Token:
+ *  Defind basic token type
+ */
 export class Token {
     type: string;
     value: string;
