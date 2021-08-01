@@ -27,7 +27,7 @@ export class Tokenizer {
 
   /**
    * @returns {string} - The next token.
-   * @throws {null} - If there are no more tokens.
+   * @return {null} - If there are no more tokens.
    */
   next(): Token {
     if (!this.hasNext()) {
@@ -44,7 +44,7 @@ export class Tokenizer {
    *  ; find and match numeric token using index
    *  ; advance the index
    *  @param {string} input - The string to tokenize.
-   *  @throws {null} - if this is not numerical token.
+   *  @return {null} - if this is not numerical token.
    */
   _parseNumerical(): Token {
     if (!Number.isNaN(Number(this._input[this._index]))) {
@@ -65,17 +65,12 @@ export class Tokenizer {
    *  ; find and match numeric token using regex
    *  ; advance the index
    *  @param {string} input - The string to tokenize.
-   *  @throws {null} - if this is not numerical token.
+   *  @return {null} - if this is not numerical token.
    */
   _parseNumericalRegex(): Token {
-    const stringSlice = this._input.slice(this._index);
-    let matches = /^\d+/.exec(stringSlice);
-    if (!!matches) {
-      this._index += matches[0].length;
+    let _tokenValue = this.__pattenMatch(/^\d+/);
 
-      return { type: NUMERIC_LITERAL, value: matches[0] };
-    }
-    return null;
+    return _tokenValue ? { type: NUMERIC_LITERAL, value: _tokenValue } : null;
   }
 
   /**
@@ -83,7 +78,7 @@ export class Tokenizer {
    *  ; find and match string token using index
    *  ; advance the index
    *  @param {string} input - The string to tokenize.
-   *  @throws {null} - if this is not string token.
+   *  @return {null} - if this is not string token.
    */
   _parseString(): Token {
     if (this._input[this._index] === '"') {
@@ -96,6 +91,38 @@ export class Tokenizer {
         value: this._input.substring(start + 1, this._index++),
       };
     }
+  }
+
+  /**
+   * _parseStringRegex:
+   *  ; find and match string token using Regex
+   *  ; advance the index
+   *  @param {string} input - The string to tokenize.
+   *  @return {null} - if this is not string token.
+   */
+  _parseStringRegex(): Token {
+    let _tokenValue = this.__pattenMatch(/"[^"]*"/);
+
+    return _tokenValue ? { type: STRING_LITERAL, value: _tokenValue } : null;
+  }
+
+  /**
+   * __pattenMatch:
+   *    ; match based in Regex
+   *    ; if match found advance index
+   *  @param {string} patten - The patten to match.
+   *  @return {null} - if this is not string token.
+   */
+  __pattenMatch(pettern) {
+    const stringSlice = this._input.slice(this._index);
+    let matches = pettern.exec(stringSlice);
+    if (!!matches) {
+      this._index += matches[0].length;
+
+      return matches[0];
+    }
+
+    return null;
   }
 }
 
