@@ -1,5 +1,5 @@
 import { Tokenizer } from "./tokenizer";
-import { NUMERIC_LITERAL } from "./types";
+import { NUMERIC_LITERAL, STRING_LITERAL } from "./types";
 
 test('Parse and return number literal', () => {
   const expected_value = {
@@ -8,3 +8,11 @@ test('Parse and return number literal', () => {
   };
   expect(new Tokenizer("50").next()).toStrictEqual(expected_value);
 });
+
+test('Parse and return number literal', () => {
+    const expected_value = {
+      type: STRING_LITERAL,
+      value: 'apple'
+    };
+    expect(new Tokenizer('"apple"').next()).toStrictEqual(expected_value);
+  });

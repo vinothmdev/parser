@@ -1,5 +1,5 @@
 import { Token, Tokenizer } from "./tokenizer";
-import { NUMERIC_LITERAL, PROGRAM } from "./types";
+import { NUMERIC_LITERAL, PROGRAM, STRING_LITERAL } from "./types";
 
 /**
  * Parser : Recursive Decent Implementation
@@ -29,9 +29,37 @@ export class Parser {
     program(): any {
         return {
             type: PROGRAM,
-            body: this.numericLiteral()
+            body: this.literal()
         };
     };
+
+    /**
+     * Literal:
+     * : NumericLiteral
+     * : StringLiteral
+     * ;
+     */
+    literal(): any {
+        const token = this._lookahead;
+        let type = null;
+
+        if (!token) {
+            throw new Error(`unexpected EOF`);
+        }
+
+        switch (token.type) {
+            case NUMERIC_LITERAL:
+                type = this.numericLiteral();
+                break;
+            case STRING_LITERAL:
+                type = this.stringLiteral();
+                break;
+            default:
+                throw new Error("Unexpected token: " + token.type);
+        }
+        return type;
+    }
+
 
     /**
      * NumericLiteral
@@ -41,6 +69,16 @@ export class Parser {
     numericLiteral(): any {
         const token = this._eat(NUMERIC_LITERAL);
         return { type: NUMERIC_LITERAL, value: Number(token.value) };
+    }
+
+    /**
+     * StringLiteral
+     * : STRING
+     * 
+     */
+    stringLiteral(): any {
+        const token = this._eat(STRING_LITERAL);
+        return { type: STRING_LITERAL, value: token.value };
     }
 
     /**

@@ -1,4 +1,4 @@
-import { NUMERIC_LITERAL } from "./types";
+import { NUMERIC_LITERAL, STRING_LITERAL } from "./types";
 
 /** 
  * Tokenizer:
@@ -42,6 +42,15 @@ export class Tokenizer {
                 this._index++;
             }
             return {type: NUMERIC_LITERAL, value: this._input.substring(start, this._index)};
+        }
+
+        // String literals
+        if (this._input[this._index] === '"') {
+            let start = this._index++;
+            while (this._input[this._index] !== '"') {
+                this._index++;
+            }
+            return {type: STRING_LITERAL, value: this._input.substring(start + 1, this._index)};
         }
 
         return null;
