@@ -12,9 +12,17 @@ test("Parse and return number literal", () => {
 test("Parse and return string literal", () => {
   const expected_value = {
     type: STRING_LITERAL,
-    value: "apple",
+    value: '"apple"',
   };
   expect(new Tokenizer('"apple"').next()).toStrictEqual(expected_value);
+});
+
+test("Parse and return string literal in single quote", () => {
+  const expected_value = {
+    type: STRING_LITERAL,
+    value: "'apple'",
+  };
+  expect(new Tokenizer(`'apple'`).next()).toStrictEqual(expected_value);
 });
 
 test("Throw error for undefined", () => {

@@ -1,4 +1,4 @@
-import { NUMERIC_LITERAL, STRING_LITERAL, UNDEFINED } from "./types";
+import { TOKEN_TYPE_SPECS, UNDEFINED } from "./types";
 
 /**
  * Tokenizer:
@@ -36,74 +36,16 @@ export class Tokenizer {
 
     const defaultToken = { type: UNDEFINED, value: undefined };
 
-    return this._parseNumericalRegex() || this._parseString() || defaultToken;
-  }
-
-  /**
-   * _parseNumerical:
-   *  ; find and match numeric token using index
-   *  ; advance the index
-   *  @param {string} input - The string to tokenize.
-   *  @return {null} - if this is not numerical token.
-   */
-  _parseNumerical(): Token {
-    if (!Number.isNaN(Number(this._input[this._index]))) {
-      let start = this._index;
-      while (!Number.isNaN(Number(this._input[this._index]))) {
-        this._index++;
+    for (const tokenTypeDef of TOKEN_TYPE_SPECS) {
+      const token = this.__pattenMatch(tokenTypeDef.pattern);
+      if (!!token) {
+        return {
+          type: tokenTypeDef.type,
+          value: token,
+        };
       }
-      return {
-        type: NUMERIC_LITERAL,
-        value: this._input.substring(start, this._index),
-      };
     }
-    return null;
-  }
-
-  /**
-   * _parseNumericalRegex:
-   *  ; find and match numeric token using regex
-   *  ; advance the index
-   *  @param {string} input - The string to tokenize.
-   *  @return {null} - if this is not numerical token.
-   */
-  _parseNumericalRegex(): Token {
-    let _tokenValue = this.__pattenMatch(/^\d+/);
-
-    return _tokenValue ? { type: NUMERIC_LITERAL, value: _tokenValue } : null;
-  }
-
-  /**
-   * _parseString:
-   *  ; find and match string token using index
-   *  ; advance the index
-   *  @param {string} input - The string to tokenize.
-   *  @return {null} - if this is not string token.
-   */
-  _parseString(): Token {
-    if (this._input[this._index] === '"') {
-      let start = this._index++;
-      while (this._input[this._index] !== '"') {
-        this._index++;
-      }
-      return {
-        type: STRING_LITERAL,
-        value: this._input.substring(start + 1, this._index++),
-      };
-    }
-  }
-
-  /**
-   * _parseStringRegex:
-   *  ; find and match string token using Regex
-   *  ; advance the index
-   *  @param {string} input - The string to tokenize.
-   *  @return {null} - if this is not string token.
-   */
-  _parseStringRegex(): Token {
-    let _tokenValue = this.__pattenMatch(/"[^"]*"/);
-
-    return _tokenValue ? { type: STRING_LITERAL, value: _tokenValue } : null;
+    return defaultToken;
   }
 
   /**

@@ -24,7 +24,7 @@ test("parse and return AST with number type", () => {
 test("parse and return AST with string type", () => {
   const expected_value = {
     type: "Program",
-    body: { type: STRING_LITERAL, value: "apple" },
+    body: { type: STRING_LITERAL, value: '"apple"' },
   };
 
   const result = parser.parse('"apple"');
