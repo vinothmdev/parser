@@ -1,1 +1,2 @@
-export const NUMERIC_LITERAL = 'NmericLiteral';
+export const PROGRAM = 'Program';
+export const NUMERIC_LITERAL = 'NumericLiteral';
