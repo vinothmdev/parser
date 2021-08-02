@@ -1,4 +1,4 @@
-import { TOKEN_TYPE_SPECS, UNDEFINED } from "./types";
+import { SKIP, TOKEN_TYPE_SPECS, UNDEFINED } from "./types";
 
 /**
  * Tokenizer:
@@ -38,7 +38,15 @@ export class Tokenizer {
 
     for (const tokenTypeDef of TOKEN_TYPE_SPECS) {
       const token = this.__pattenMatch(tokenTypeDef.pattern);
+
       if (!!token) {
+        // Found white space
+        // Ignore it
+        if (tokenTypeDef.type === SKIP) {
+          return this.next();
+        }
+
+        // Return the token
         return {
           type: tokenTypeDef.type,
           value: token,

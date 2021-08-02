@@ -32,3 +32,24 @@ test("Throw error for undefined", () => {
   };
   expect(new Tokenizer("apple").next()).toStrictEqual(expected_value);
 });
+
+test("Ignore Space", () => {
+  const expected_value = {
+    type: NUMERIC_LITERAL,
+    value: "42",
+  };
+  expect(new Tokenizer("  42  ").next()).toStrictEqual(expected_value);
+});
+
+test("Ignore Space", () => {
+  const expected_value = {
+    type: NUMERIC_LITERAL,
+    value: "42",
+  };
+  expect(
+    new Tokenizer(`
+    // Comments
+    42
+  `).next()
+  ).toStrictEqual(expected_value);
+});
