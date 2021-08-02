@@ -1,3 +1,4 @@
+import { EOF } from "dns";
 import { SKIP, TOKEN_TYPE_SPECS, UNDEFINED } from "./types";
 
 /**
@@ -31,7 +32,7 @@ export class Tokenizer {
    */
   next(): Token {
     if (!this.hasNext()) {
-      return null;
+      return { type: EOF, value: undefined };
     }
 
     const defaultToken = { type: UNDEFINED, value: undefined };
@@ -87,5 +88,5 @@ export class Tokenizer {
  */
 export class Token {
   type: string;
-  value: string;
+  value: any;
 }
