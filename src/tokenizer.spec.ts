@@ -12,7 +12,7 @@ test("Parse and return number literal", () => {
 test("Parse and return string literal", () => {
   const expected_value = {
     type: STRING_LITERAL,
-    value: '"apple"',
+    value: "apple",
   };
   expect(new Tokenizer('"apple"').next()).toStrictEqual(expected_value);
 });
@@ -20,9 +20,9 @@ test("Parse and return string literal", () => {
 test("Parse and return string literal in single quote", () => {
   const expected_value = {
     type: STRING_LITERAL,
-    value: "'apple'",
+    value: "apple",
   };
-  expect(new Tokenizer(`'apple'`).next()).toStrictEqual(expected_value);
+  expect(new Tokenizer("'apple'").next()).toStrictEqual(expected_value);
 });
 
 test("Throw error for undefined", () => {
@@ -41,7 +41,7 @@ test("Ignore Space", () => {
   expect(new Tokenizer("  42  ").next()).toStrictEqual(expected_value);
 });
 
-test("Ignore Space", () => {
+test("Ignore Single Line Comment", () => {
   const expected_value = {
     type: NUMERIC_LITERAL,
     value: "42",
@@ -49,6 +49,34 @@ test("Ignore Space", () => {
   expect(
     new Tokenizer(`
     // Comments
+    42
+  `).next()
+  ).toStrictEqual(expected_value);
+});
+
+test("Ignore Multiline Comment", () => {
+  const expected_value = {
+    type: NUMERIC_LITERAL,
+    value: "42",
+  };
+  expect(
+    new Tokenizer(`
+    /**
+     * 
+     */ 
+    42
+  `).next()
+  ).toStrictEqual(expected_value);
+});
+
+test("Ignore empty lines", () => {
+  const expected_value = {
+    type: NUMERIC_LITERAL,
+    value: "42",
+  };
+  expect(
+    new Tokenizer(`
+
     42
   `).next()
   ).toStrictEqual(expected_value);

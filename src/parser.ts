@@ -78,16 +78,11 @@ export class Parser {
 
   /**
    * _eat:
-   * : [a-zA-Z]+
-   * | [0-9]+
+   * : return token and fetch next token
    * ;
    */
   _eat(type: string): Token {
     const token = this._lookahead;
-
-    if (!token) {
-      throw new Error(`unexpected EOF, expected '${type}'`);
-    }
 
     // Advance to the next token
     this._lookahead = this._tokenizer.next();

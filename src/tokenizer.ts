@@ -37,13 +37,18 @@ export class Tokenizer {
     const defaultToken = { type: UNDEFINED, value: undefined };
 
     for (const tokenTypeDef of TOKEN_TYPE_SPECS) {
-      const token = this.__pattenMatch(tokenTypeDef.pattern);
+      let token = this.__pattenMatch(tokenTypeDef.pattern);
 
       if (!!token) {
         // Found white space
         // Ignore it
         if (tokenTypeDef.type === SKIP) {
           return this.next();
+        }
+
+        // If it has calback to ignore it
+        if (tokenTypeDef.callback) {
+          token = tokenTypeDef.callback(token);
         }
 
         // Return the token
