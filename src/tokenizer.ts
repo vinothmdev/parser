@@ -87,11 +87,6 @@ export class Tokenizer {
  *  Defind basic token type
  */
 export class Token {
-  public type: string;
-  public value: any;
-
-  constructor(type: string, value: any) {
-    this.type = type;
-    this.value = value;
-  }
+  type!: string;
+  value!: any;
 }

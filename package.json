@@ -4,7 +4,8 @@
   "description": "This is to try out a parser from scratch",
   "main": "parser.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "repository": {
     "type": "git",
