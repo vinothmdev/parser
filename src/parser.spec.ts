@@ -132,6 +132,21 @@ test("parse and return AST with empty block expression", () => {
   expect(result).toStrictEqual(expected_value);
 });
 
+test("parse and return AST with empty expression", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "EmptyStatement",
+      },
+    ],
+  };
+  const result = parser.parse(`
+  ;
+  `);
+  expect(result).toStrictEqual(expected_value);
+});
+
 test("Throw error for undefined", () => {
   const t = () => {
     parser.parse("a");

@@ -4,6 +4,7 @@ export const STRING_LITERAL = "StringLiteral";
 export const UNDEFINED = "UNDEFINED";
 export const BLOCK_STATEMENT = "BlockStatement";
 export const EXPRESSION_STATEMENT = "ExpressionStatement";
+export const EMPTY_STATE = "EmptyStatement";
 
 export const SKIP = null;
 export const WHITE_SPACE = SKIP;

@@ -3,6 +3,7 @@ import { Token, Tokenizer } from "./tokenizer";
 import {
   BLOCK_STATEMENT,
   CLOSE_BLOCK,
+  EMPTY_STATE,
   EXPRESSION_STATEMENT,
   LINE_TERMINATOR,
   NUMERIC_LITERAL,
@@ -67,32 +68,35 @@ export class Parser {
    * ;
    */
   statement(): any {
-    if (this._lookahead.type === OPEN_BLOCK) {
-      return this.blockStatement();
+    switch (this._lookahead.type) {
+      case OPEN_BLOCK:
+        return this.blockStatement();
+      case LINE_TERMINATOR:
+        return this.emptyStatement();
+      default:
+        return this.expressionStatement();
     }
-    return this.expressionStatement();
   }
 
+  /**
+   * emptyStatement:
+   * : ;
+   * ;
+   */
+  emptyStatement(): any {
+    this._eat(LINE_TERMINATOR);
+    return { type: EMPTY_STATE };
+  }
   /**
    * blockStatement:
    * : OPEN_BLOCK StatementList CLOSE_BLOCK
    * ;
    */
   blockStatement(): any {
-    return { type: BLOCK_STATEMENT, body: this.blockStatementList() };
-  }
-
-  /**
-   * blockStatementList:
-   * : Statement
-   * | Statement StatementList
-   * ;
-   */
-  blockStatementList(): any[] {
     this._eat(OPEN_BLOCK);
     const statements = this.statementList(CLOSE_BLOCK);
     this._eat(CLOSE_BLOCK);
-    return statements;
+    return { type: BLOCK_STATEMENT, body: statements };
   }
 
   /**
