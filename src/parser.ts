@@ -16,13 +16,13 @@ import {
  * Parser : Recursive Decent Implementation
  */
 export class Parser {
-  _value: string;
-  _tokenizer: Tokenizer;
-  _lookahead: Token;
+  _value!: string;
+  _tokenizer!: Tokenizer;
+  _lookahead!: Token;
   /**
    * Parse string into AST
    */
-  parse(str) {
+  parse(str: string) {
     this._value = str;
     this._tokenizer = new Tokenizer(str);
 
@@ -50,7 +50,7 @@ export class Parser {
    * | Statement StatementList
    * ;
    */
-  statementList(terminator?): any[] {
+  statementList(terminator?: string): any[] {
     const statements: any[] = [];
     while (
       this._lookahead.type !== EOF &&

@@ -13,7 +13,7 @@ export class Tokenizer {
   /**
    * @param {string} input - The string to tokenize.
    */
-  constructor(input) {
+  constructor(input: string) {
     this._input = input;
     this._length = input.length;
     this._index = 0;
@@ -69,7 +69,7 @@ export class Tokenizer {
    *  @param {string} patten - The patten to match.
    *  @return {null} - if this is not string token.
    */
-  __pattenMatch(pettern) {
+  __pattenMatch(pettern: RegExp) {
     const stringSlice = this._input.slice(this._index);
     let matches = pettern.exec(stringSlice);
     if (!!matches) {
@@ -87,6 +87,11 @@ export class Tokenizer {
  *  Defind basic token type
  */
 export class Token {
-  type: string;
-  value: any;
+  public type: string;
+  public value: any;
+
+  constructor(type: string, value: any) {
+    this.type = type;
+    this.value = value;
+  }
 }

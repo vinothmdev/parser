@@ -20,12 +20,12 @@ export const TOKEN_TYPE_SPECS = [
   {
     type: STRING_LITERAL,
     pattern: /^"(?:[^"\\]|\\.)*"/,
-    callback: (str) => str.substr(1, str.length - 2),
+    callback: (str: string) => str.substr(1, str.length - 2),
   },
   {
     type: STRING_LITERAL,
     pattern: /^'(?:[^'\\]|\\.)*'/,
-    callback: (str) => str.substr(1, str.length - 2),
+    callback: (str: string) => str.substr(1, str.length - 2),
   },
   { type: WHITE_SPACE, pattern: /^\s+/ },
   { type: COMMENTS, pattern: /^\/\/.*/ },
