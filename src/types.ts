@@ -5,6 +5,7 @@ export const UNDEFINED = "UNDEFINED";
 export const BLOCK_STATEMENT = "BlockStatement";
 export const EXPRESSION_STATEMENT = "ExpressionStatement";
 export const EMPTY_STATE = "EmptyStatement";
+export const BINARY_EXPRESSION = "BinaryExpression";
 
 export const SKIP = null;
 export const WHITE_SPACE = SKIP;
@@ -14,6 +15,7 @@ export const EOF = SKIP;
 export const LINE_TERMINATOR = ";";
 export const OPEN_BLOCK = "{";
 export const CLOSE_BLOCK = "}";
+export const OPERATOR = 'OPERATOR';
 
 export const TOKEN_TYPE_SPECS = [
   { type: NUMERIC_LITERAL, pattern: /^\d+/ },
@@ -32,6 +34,10 @@ export const TOKEN_TYPE_SPECS = [
   { type: COMMENTS, pattern: /^\/\*[\s\S]*?\*\// },
   { type: EMPTY_LINE, pattern: /^\s*$/ },
   { type: LINE_TERMINATOR, pattern: /^[;]/ },
-  { type: OPEN_BLOCK, pattern: /^\{/ },
-  { type: CLOSE_BLOCK, pattern: /^\}/ },
+  { type: OPEN_BLOCK, pattern: /^{/ },
+  { type: CLOSE_BLOCK, pattern: /^}/ },
+  { type: OPERATOR, pattern: /^\+/ },
+  { type: OPERATOR, pattern: /^-/ },
+  { type: OPERATOR, pattern: /^\*/ },
+  { type: OPERATOR, pattern: /^\// },
 ];
