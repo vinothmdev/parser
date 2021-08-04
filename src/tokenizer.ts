@@ -1,4 +1,5 @@
 import { EOF } from "dns";
+import { Token } from "./token";
 import { SKIP, TOKEN_TYPE_SPECS, UNDEFINED } from "./types";
 
 /**
@@ -69,7 +70,7 @@ export class Tokenizer {
    *  @param {string} patten - The patten to match.
    *  @return {null} - if this is not string token.
    */
-  __pattenMatch(pettern: RegExp) {
+  __pattenMatch(pettern: RegExp): string | null {
     const stringSlice = this._input.slice(this._index);
     let matches = pettern.exec(stringSlice);
     if (!!matches) {
@@ -80,13 +81,4 @@ export class Tokenizer {
 
     return null;
   }
-}
-
-/**
- * Token:
- *  Defind basic token type
- */
-export class Token {
-  type!: string;
-  value!: any;
 }

@@ -1,5 +1,6 @@
 import { EOF } from "dns";
-import { Token, Tokenizer } from "./tokenizer";
+import { Token } from "./token";
+import { Tokenizer } from "./tokenizer";
 import {
   BINARY_EXPRESSION,
   BLOCK_STATEMENT,
@@ -23,7 +24,7 @@ export class Parser {
   /**
    * Parse string into AST
    */
-  parse(str: string) {
+  parse(str: string): Token {
     this._value = str;
     this._tokenizer = new Tokenizer(str);
 
@@ -38,7 +39,7 @@ export class Parser {
    *  :NumericLiteral
    *  ;
    */
-  program(): any {
+  program(): Token {
     return {
       type: PROGRAM,
       body: this.statementList(),
@@ -51,8 +52,8 @@ export class Parser {
    * | Statement StatementList
    * ;
    */
-  statementList(terminator?: string): any[] {
-    const statements: any[] = [];
+  statementList(terminator?: string): Token[] {
+    const statements: Token[] = [];
     while (
       this._lookahead.type !== EOF &&
       (!terminator || this._lookahead.type !== terminator)
@@ -68,7 +69,7 @@ export class Parser {
    * | BlockStatement
    * ;
    */
-  statement(): any {
+  statement(): Token {
     switch (this._lookahead.type) {
       case OPEN_BLOCK:
         return this.blockStatement();
@@ -84,7 +85,7 @@ export class Parser {
    * : ;
    * ;
    */
-  emptyStatement(): any {
+  emptyStatement(): Token {
     this._eat(LINE_TERMINATOR);
     return { type: EMPTY_STATE };
   }
@@ -93,7 +94,7 @@ export class Parser {
    * : OPEN_BLOCK StatementList CLOSE_BLOCK
    * ;
    */
-  blockStatement(): any {
+  blockStatement(): Token {
     this._eat(OPEN_BLOCK);
     const statements = this.statementList(CLOSE_BLOCK);
     this._eat(CLOSE_BLOCK);
@@ -105,7 +106,7 @@ export class Parser {
    * : Expression ;
    * ;
    */
-  expressionStatement(): any {
+  expressionStatement(): Token {
     const expression = this.expression();
     this._eat(LINE_TERMINATOR);
     return { type: EXPRESSION_STATEMENT, expression };
@@ -126,11 +127,11 @@ export class Parser {
    * | binaryExpression OPERATOR Literal
    * ;
    */
-  binaryExpression(): any {
+  binaryExpression(): Token {
     let left = this.literal();
 
-    while (this._lookahead.type === 'OPERATOR') {
-      const operator = this._eat('OPERATOR');
+    while (this._lookahead.type === "OPERATOR") {
+      const operator = this._eat("OPERATOR");
       const right = this.literal();
 
       left = {
@@ -149,7 +150,7 @@ export class Parser {
    * : StringLiteral
    * ;
    */
-  literal(): any {
+  literal(): Token {
     const token = this._lookahead;
     let type = null;
 
