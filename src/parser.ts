@@ -2,14 +2,18 @@ import { EOF } from "dns";
 import { Token } from "./token";
 import { Tokenizer } from "./tokenizer";
 import {
+  ADD_OPERATOR,
   BINARY_EXPRESSION,
   BLOCK_STATEMENT,
   CLOSE_BLOCK,
+  CLOSE_PARENTHESIS,
   EMPTY_STATE,
   EXPRESSION_STATEMENT,
   LINE_TERMINATOR,
+  MULTIPLICATION_OPERATOR,
   NUMERIC_LITERAL,
   OPEN_BLOCK,
+  OPEN_PARENTHESIS,
   PROGRAM,
   STRING_LITERAL,
 } from "./types";
@@ -118,20 +122,43 @@ export class Parser {
    * ;
    */
   expression(): Token {
-    return this.binaryExpression();
+    return this.binaryAdditiveExpression();
   }
 
   /**
    * binaryExpression:
-   * : Literal
-   * | binaryExpression OPERATOR Literal
+   * : multiplicativeExpression
+   * | multiplicativeExpression OPERATOR Literal
    * ;
    */
-  binaryExpression(): Token {
+  binaryAdditiveExpression(): Token {
+    let left = this.multiplicativeExpression();
+
+    while (this._lookahead.type === ADD_OPERATOR) {
+      const operator = this._eat(ADD_OPERATOR);
+      const right = this.multiplicativeExpression();
+
+      left = {
+        type: BINARY_EXPRESSION,
+        operator: operator.value,
+        left,
+        right,
+      };
+    }
+    return left;
+  }
+
+  /**
+   * binaryExpremultiplicativeExpressionssion:
+   * : multiplicativeExpression
+   * | multiplicativeExpression OPERATOR Literal
+   * ;
+   */
+  multiplicativeExpression(): Token {
     let left = this.literal();
 
-    while (this._lookahead.type === "OPERATOR") {
-      const operator = this._eat("OPERATOR");
+    while (this._lookahead.type === MULTIPLICATION_OPERATOR) {
+      const operator = this._eat(MULTIPLICATION_OPERATOR);
       const right = this.literal();
 
       left = {
@@ -161,6 +188,9 @@ export class Parser {
       case STRING_LITERAL:
         type = this.stringLiteral();
         break;
+      case OPEN_PARENTHESIS:
+        type = this.parenthesisExpression();
+        break;
       default:
         throw new Error(`unexpected token '${token.value}'`);
     }
@@ -185,6 +215,18 @@ export class Parser {
   stringLiteral(): Token {
     const token = this._eat(STRING_LITERAL);
     return { type: STRING_LITERAL, value: token.value };
+  }
+
+  /**
+   * parenthesisExpression:
+   * : OPEN_PARENTHESIS expression CLOSE_PARENTHESIS
+   * ;
+   */
+  parenthesisExpression(): Token {
+    this._eat(OPEN_PARENTHESIS);
+    const expression = this.expression();
+    this._eat(CLOSE_PARENTHESIS);
+    return expression;
   }
 
   /**

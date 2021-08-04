@@ -15,7 +15,10 @@ export const EOF = SKIP;
 export const LINE_TERMINATOR = ";";
 export const OPEN_BLOCK = "{";
 export const CLOSE_BLOCK = "}";
-export const OPERATOR = 'OPERATOR';
+export const ADD_OPERATOR = "ADD_OPERATOR";
+export const MULTIPLICATION_OPERATOR = "MULTIPLICATION_OPERATOR";
+export const OPEN_PARENTHESIS = "(";
+export const CLOSE_PARENTHESIS = ")";
 
 export const TOKEN_TYPE_SPECS = [
   { type: NUMERIC_LITERAL, pattern: /^\d+/ },
@@ -36,8 +39,8 @@ export const TOKEN_TYPE_SPECS = [
   { type: LINE_TERMINATOR, pattern: /^[;]/ },
   { type: OPEN_BLOCK, pattern: /^{/ },
   { type: CLOSE_BLOCK, pattern: /^}/ },
-  { type: OPERATOR, pattern: /^\+/ },
-  { type: OPERATOR, pattern: /^-/ },
-  { type: OPERATOR, pattern: /^\*/ },
-  { type: OPERATOR, pattern: /^\// },
+  { type: ADD_OPERATOR, pattern: /^[\+|-]/ },
+  { type: MULTIPLICATION_OPERATOR, pattern: /^[\*|\/]/ },
+  { type: OPEN_PARENTHESIS, pattern: /^\(/ },
+  { type: CLOSE_PARENTHESIS, pattern: /^\)/ },
 ];

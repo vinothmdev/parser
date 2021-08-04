@@ -1,64 +1,64 @@
-import {Parser} from "./parser";
-import {STRING_LITERAL} from "./types";
+import { Parser } from "./parser";
+import { STRING_LITERAL } from "./types";
 
 let parser: Parser;
 
 beforeAll(() => {
-    parser = new Parser();
+  parser = new Parser();
 });
 
 afterAll((done) => {
-    done();
+  done();
 });
 
 test("parse and return AST with number type", () => {
-    const expected_value = {
-        type: "Program",
-        body: [
-            {
-                type: "ExpressionStatement",
-                expression: {type: "NumericLiteral", value: 50},
-            },
-        ],
-    };
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: { type: "NumericLiteral", value: 50 },
+      },
+    ],
+  };
 
-    const result = parser.parse("50;");
-    expect(result).toStrictEqual(expected_value);
+  const result = parser.parse("50;");
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("parse and return AST with string type", () => {
-    const expected_value = {
-        type: "Program",
-        body: [
-            {
-                type: "ExpressionStatement",
-                expression: {type: STRING_LITERAL, value: "apple"},
-            },
-        ],
-    };
-    const result = parser.parse('"apple";');
-    expect(result).toStrictEqual(expected_value);
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: { type: STRING_LITERAL, value: "apple" },
+      },
+    ],
+  };
+  const result = parser.parse('"apple";');
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("parse and return AST with number, string, comment and multiline expressions", () => {
-    const expected_value = {
-        type: "Program",
-        body: [
-            {
-                type: "ExpressionStatement",
-                expression: {type: STRING_LITERAL, value: "apple"},
-            },
-            {
-                type: "ExpressionStatement",
-                expression: {type: "NumericLiteral", value: 50},
-            },
-            {
-                type: "ExpressionStatement",
-                expression: {type: "NumericLiteral", value: 200},
-            },
-        ],
-    };
-    const result = parser.parse(`
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: { type: STRING_LITERAL, value: "apple" },
+      },
+      {
+        type: "ExpressionStatement",
+        expression: { type: "NumericLiteral", value: 50 },
+      },
+      {
+        type: "ExpressionStatement",
+        expression: { type: "NumericLiteral", value: 200 },
+      },
+    ],
+  };
+  const result = parser.parse(`
   // String
   "apple";
 
@@ -70,33 +70,33 @@ test("parse and return AST with number, string, comment and multiline expression
    */
   200;
   `);
-    expect(result).toStrictEqual(expected_value);
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("parse and return AST with block expression", () => {
-    const expected_value = {
-        type: "Program",
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "BlockStatement",
         body: [
-            {
-                type: "BlockStatement",
-                body: [
-                    {
-                        type: "ExpressionStatement",
-                        expression: {type: STRING_LITERAL, value: "apple"},
-                    },
-                ],
-            },
-            {
-                type: "ExpressionStatement",
-                expression: {type: "NumericLiteral", value: 50},
-            },
-            {
-                type: "ExpressionStatement",
-                expression: {type: "NumericLiteral", value: 200},
-            },
+          {
+            type: "ExpressionStatement",
+            expression: { type: STRING_LITERAL, value: "apple" },
+          },
         ],
-    };
-    const result = parser.parse(`
+      },
+      {
+        type: "ExpressionStatement",
+        expression: { type: "NumericLiteral", value: 50 },
+      },
+      {
+        type: "ExpressionStatement",
+        expression: { type: "NumericLiteral", value: 200 },
+      },
+    ],
+  };
+  const result = parser.parse(`
   // String
   {
   "apple";
@@ -110,168 +110,250 @@ test("parse and return AST with block expression", () => {
    */
   200;
   `);
-    expect(result).toStrictEqual(expected_value);
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("parse and return AST with empty block expression", () => {
-    const expected_value = {
-        type: "Program",
-        body: [
-            {
-                type: "BlockStatement",
-                body: [],
-            },
-        ],
-    };
-    const result = parser.parse(`
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "BlockStatement",
+        body: [],
+      },
+    ],
+  };
+  const result = parser.parse(`
   // String
   {
 
   }
   `);
-    expect(result).toStrictEqual(expected_value);
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("parse and return AST with empty expression", () => {
-    const expected_value = {
-        type: "Program",
-        body: [
-            {
-                type: "EmptyStatement",
-            },
-        ],
-    };
-    const result = parser.parse(`
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "EmptyStatement",
+      },
+    ],
+  };
+  const result = parser.parse(`
   ;
   `);
-    expect(result).toStrictEqual(expected_value);
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("Parsing binary expressions", () => {
-    const expected_value = {
-        type: "Program",
-        body: [
-            {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "BinaryExpression",
-                    operator: '+',
-                    left: {type: "NumericLiteral", value: 1},
-                    right: {type: "NumericLiteral", value: 1}
-                }
-            },
-        ],
-    };
-    const result = parser.parse(`1+1;`);
-    expect(result).toStrictEqual(expected_value);
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "BinaryExpression",
+          operator: "+",
+          left: { type: "NumericLiteral", value: 1 },
+          right: { type: "NumericLiteral", value: 1 },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`1+1;`);
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("Parsing nested binary expressions", () => {
-    const expected_value = {
-        type: "Program",
-        body: [
-            {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "BinaryExpression",
-                    operator: '+',
-                    left: {
-                        type: "BinaryExpression",
-                        operator: '+',
-                        left: {type: "NumericLiteral", value: 1},
-                        right: {type: "NumericLiteral", value: 2}
-                    },
-                    right: {type: "NumericLiteral", value: 3}
-                }
-            },
-        ],
-    };
-    const result = parser.parse(`1+2+3;`);
-    expect(result).toStrictEqual(expected_value);
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "BinaryExpression",
+          operator: "+",
+          left: {
+            type: "BinaryExpression",
+            operator: "+",
+            left: { type: "NumericLiteral", value: 1 },
+            right: { type: "NumericLiteral", value: 2 },
+          },
+          right: { type: "NumericLiteral", value: 3 },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`1+2+3;`);
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("Parsing nested binary expressions multiplication", () => {
-    const expected_value = {
-        type: "Program",
-        body: [
-            {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "BinaryExpression",
-                    operator: '*',
-                    left: {
-                        type: "BinaryExpression",
-                        operator: '*',
-                        left: {type: "NumericLiteral", value: 1},
-                        right: {type: "NumericLiteral", value: 2}
-                    },
-                    right: {type: "NumericLiteral", value: 3}
-                }
-            },
-        ],
-    };
-    const result = parser.parse(`1*2*3;`);
-    expect(result).toStrictEqual(expected_value);
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "BinaryExpression",
+          operator: "*",
+          left: {
+            type: "BinaryExpression",
+            operator: "*",
+            left: { type: "NumericLiteral", value: 1 },
+            right: { type: "NumericLiteral", value: 2 },
+          },
+          right: { type: "NumericLiteral", value: 3 },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`1*2*3;`);
+  expect(result).toStrictEqual(expected_value);
 });
 
-test("Parsing nested binary expressions grouped by precedence", () => {
-    const expected_value = {
-        type: "Program",
-        body: [
-            {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "BinaryExpression",
-                    operator: '+',
-                    left: {
-                        type: "BinaryExpression",
-                        operator: '*',
-                        left: {type: "NumericLiteral", value: 2},
-                        right: {type: "NumericLiteral", value: 3}
-                    },
-                    right: {type: "NumericLiteral", value: 3}
-                }
-            },
-        ],
-    };
-    const result = parser.parse(`1+(2*3);`);
-    expect(result).toStrictEqual(expected_value);
+test("Parsing nested binary expressions grouped by precedence multiplication at right", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "BinaryExpression",
+          operator: "+",
+          right: {
+            type: "BinaryExpression",
+            operator: "*",
+            left: { type: "NumericLiteral", value: 2 },
+            right: { type: "NumericLiteral", value: 3 },
+          },
+          left: { type: "NumericLiteral", value: 1 },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`1+2*3;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Parsing nested binary expressions grouped by precedence multiplication at left", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "BinaryExpression",
+          operator: "+",
+          left: {
+            type: "BinaryExpression",
+            operator: "*",
+            left: { type: "NumericLiteral", value: 1 },
+            right: { type: "NumericLiteral", value: 2 },
+          },
+          right: { type: "NumericLiteral", value: 3 },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`1*2+3;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Parsing nested binary expressions grouped by precedence with multiplication on left and right", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "BinaryExpression",
+          operator: "+",
+          left: {
+            type: "BinaryExpression",
+            operator: "*",
+            left: { type: "NumericLiteral", value: 1 },
+            right: { type: "NumericLiteral", value: 2 },
+          },
+          right: {
+            type: "BinaryExpression",
+            operator: "*",
+            left: { type: "NumericLiteral", value: 3 },
+            right: { type: "NumericLiteral", value: 4 },
+          },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`1*2+3*4;`);
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("Parsing grouped binary expressions", () => {
-    const expected_value = {
-        type: "Program",
-        body: [
-            {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "BinaryExpression",
-                    operator: '*',
-                    left: {
-                        type: "BinaryExpression",
-                        operator: '+',
-                        left: {type: "NumericLiteral", value: 1},
-                        right: {type: "NumericLiteral", value: 2}
-                    },
-                    right: {type: "NumericLiteral", value: 3}
-                }
-            },
-        ],
-    };
-    const result = parser.parse(`(1+2)*3;`);
-    expect(result).toStrictEqual(expected_value);
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "BinaryExpression",
+          operator: "*",
+          left: {
+            type: "BinaryExpression",
+            operator: "+",
+            left: { type: "NumericLiteral", value: 1 },
+            right: { type: "NumericLiteral", value: 2 },
+          },
+          right: { type: "NumericLiteral", value: 3 },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`(1+2)*3;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Parsing multiple grouped binary expressions", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "BinaryExpression",
+          operator: "-",
+          left: {
+            type: "BinaryExpression",
+            operator: "+",
+            left: { type: "NumericLiteral", value: 1 },
+            right: { type: "NumericLiteral", value: 2 },
+          },
+          right: {
+            type: "BinaryExpression",
+            operator: "+",
+            left: { type: "NumericLiteral", value: 3 },
+            right: { type: "NumericLiteral", value: 4 },
+          },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`(1+2)-(3+4);`);
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("Throw error for undefined", () => {
-    const t = () => {
-        parser.parse("a");
-    };
-    expect(t).toThrow(/unexpected token 'undefined'/);
+  const t = () => {
+    parser.parse("a");
+  };
+  expect(t).toThrow(/unexpected token 'undefined'/);
 });
 
 test("Throw error for undefined", () => {
-    const t = () => {
-        parser.parse("50");
-    };
-    expect(t).toThrow(/unexpected EOF, expected ';'/);
+  const t = () => {
+    parser.parse("50");
+  };
+  expect(t).toThrow(/unexpected EOF, expected ';'/);
 });
