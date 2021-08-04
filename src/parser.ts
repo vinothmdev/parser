@@ -122,21 +122,21 @@ export class Parser {
    * ;
    */
   expression(): Token {
-    return this.binaryAdditiveExpression();
+    return this.additiveExpression();
   }
 
   /**
    * binaryExpression:
    * : multiplicativeExpression
-   * | multiplicativeExpression OPERATOR Literal
+   * : additiveExpression
    * ;
    */
-  binaryAdditiveExpression(): Token {
-    let left = this.multiplicativeExpression();
+  binaryExpression(type: string, consumes: () => Token): Token {
+    let left = consumes();
 
-    while (this._lookahead.type === ADD_OPERATOR) {
-      const operator = this._eat(ADD_OPERATOR);
-      const right = this.multiplicativeExpression();
+    while (this._lookahead.type === type) {
+      const operator = this._eat(type);
+      const right = consumes();
 
       left = {
         type: BINARY_EXPRESSION,
@@ -146,6 +146,19 @@ export class Parser {
       };
     }
     return left;
+  }
+
+  /**
+   * additiveExpression:
+   * : multiplicativeExpression
+   * | multiplicativeExpression OPERATOR Literal
+   * ;
+   */
+  additiveExpression(): Token {
+    return this.binaryExpression(
+      ADD_OPERATOR,
+      this.multiplicativeExpression.bind(this)
+    );
   }
 
   /**
@@ -155,20 +168,10 @@ export class Parser {
    * ;
    */
   multiplicativeExpression(): Token {
-    let left = this.literal();
-
-    while (this._lookahead.type === MULTIPLICATION_OPERATOR) {
-      const operator = this._eat(MULTIPLICATION_OPERATOR);
-      const right = this.literal();
-
-      left = {
-        type: BINARY_EXPRESSION,
-        operator: operator.value,
-        left,
-        right,
-      };
-    }
-    return left;
+    return this.binaryExpression(
+      MULTIPLICATION_OPERATOR,
+      this.literal.bind(this)
+    );
   }
 
   /**
