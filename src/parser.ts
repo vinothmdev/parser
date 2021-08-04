@@ -1,6 +1,7 @@
 import { EOF } from "dns";
 import { Token, Tokenizer } from "./tokenizer";
 import {
+  BINARY_EXPRESSION,
   BLOCK_STATEMENT,
   CLOSE_BLOCK,
   EMPTY_STATE,
@@ -115,8 +116,31 @@ export class Parser {
    * : Literal
    * ;
    */
-  expression(): any {
-    return this.literal();
+  expression(): Token {
+    return this.binaryExpression();
+  }
+
+  /**
+   * binaryExpression:
+   * : Literal
+   * | binaryExpression OPERATOR Literal
+   * ;
+   */
+  binaryExpression(): any {
+    let left = this.literal();
+
+    while (this._lookahead.type === 'OPERATOR') {
+      const operator = this._eat('OPERATOR');
+      const right = this.literal();
+
+      left = {
+        type: BINARY_EXPRESSION,
+        operator: operator.value,
+        left,
+        right,
+      };
+    }
+    return left;
   }
 
   /**
@@ -125,7 +149,7 @@ export class Parser {
    * : StringLiteral
    * ;
    */
-  literal(): Token {
+  literal(): any {
     const token = this._lookahead;
     let type = null;
 
