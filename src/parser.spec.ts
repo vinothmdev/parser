@@ -190,6 +190,54 @@ test("Parsing nested binary expressions", () => {
     expect(result).toStrictEqual(expected_value);
 });
 
+test("Parsing nested binary expressions multiplication", () => {
+    const expected_value = {
+        type: "Program",
+        body: [
+            {
+                type: "ExpressionStatement",
+                expression: {
+                    type: "BinaryExpression",
+                    operator: '*',
+                    left: {
+                        type: "BinaryExpression",
+                        operator: '*',
+                        left: {type: "NumericLiteral", value: 1},
+                        right: {type: "NumericLiteral", value: 2}
+                    },
+                    right: {type: "NumericLiteral", value: 3}
+                }
+            },
+        ],
+    };
+    const result = parser.parse(`1*2*3;`);
+    expect(result).toStrictEqual(expected_value);
+});
+
+test("Parsing nested binary expressions grouped by precedence", () => {
+    const expected_value = {
+        type: "Program",
+        body: [
+            {
+                type: "ExpressionStatement",
+                expression: {
+                    type: "BinaryExpression",
+                    operator: '+',
+                    left: {
+                        type: "BinaryExpression",
+                        operator: '*',
+                        left: {type: "NumericLiteral", value: 2},
+                        right: {type: "NumericLiteral", value: 3}
+                    },
+                    right: {type: "NumericLiteral", value: 3}
+                }
+            },
+        ],
+    };
+    const result = parser.parse(`1+(2*3);`);
+    expect(result).toStrictEqual(expected_value);
+});
+
 test("Parsing grouped binary expressions", () => {
     const expected_value = {
         type: "Program",
