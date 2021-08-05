@@ -344,11 +344,86 @@ test("Parsing multiple grouped binary expressions", () => {
   expect(result).toStrictEqual(expected_value);
 });
 
-test("Throw error for undefined", () => {
-  const t = () => {
-    parser.parse("a");
+test("Parsing simple assignment with binary expression", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "AssignmentExpression",
+          operator: "=",
+          left: {
+            type: "Identifier",
+            name: "x",
+          },
+          right: {
+            type: "BinaryExpression",
+            operator: "*",
+            left: {
+              type: "BinaryExpression",
+              operator: "+",
+              left: { type: "NumericLiteral", value: 1 },
+              right: { type: "NumericLiteral", value: 2 },
+            },
+            right: { type: "NumericLiteral", value: 3 },
+          },
+        },
+      },
+    ],
   };
-  expect(t).toThrow(/unexpected token 'undefined'/);
+  const result = parser.parse(`x = (1+2)*3;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Parsing simple assignment", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "AssignmentExpression",
+          operator: "=",
+          left: {
+            type: "Identifier",
+            name: "x",
+          },
+          right: {
+            type: "NumericLiteral",
+            value: 3,
+          },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`x = 3;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Parsing simple assignment", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "AssignmentExpression",
+          operator: "+=",
+          left: {
+            type: "Identifier",
+            name: "x",
+          },
+          right: {
+            type: "NumericLiteral",
+            value: 3,
+          },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`x += 3;`);
+  expect(result).toStrictEqual(expected_value);
 });
 
 test("Throw error for undefined", () => {
@@ -356,4 +431,18 @@ test("Throw error for undefined", () => {
     parser.parse("50");
   };
   expect(t).toThrow(/unexpected EOF, expected ';'/);
+});
+
+test("Throw error for undefined", () => {
+  const t = () => {
+    parser.parse("50**");
+  };
+  expect(t).toThrow(/unexpected token '*'/);
+});
+
+test("Throw error for undefined", () => {
+  const t = () => {
+    parser.parse("50*;");
+  };
+  expect(t).toThrow(/unexpected token '*'/);
 });

@@ -3,18 +3,22 @@ import { Token } from "./token";
 import { Tokenizer } from "./tokenizer";
 import {
   ADD_OPERATOR,
+  ASSIGNMENT_EXPRESSION,
   BINARY_EXPRESSION,
   BLOCK_STATEMENT,
   CLOSE_BLOCK,
   CLOSE_PARENTHESIS,
+  COMPLEX_ASSIGNMENT,
   EMPTY_STATE,
   EXPRESSION_STATEMENT,
+  IDENTIFIER,
   LINE_TERMINATOR,
   MULTIPLICATION_OPERATOR,
   NUMERIC_LITERAL,
   OPEN_BLOCK,
   OPEN_PARENTHESIS,
   PROGRAM,
+  SIMPLE_ASSIGNMENT,
   STRING_LITERAL,
 } from "./types";
 
@@ -122,7 +126,44 @@ export class Parser {
    * ;
    */
   expression(): Token {
+    return this.assignmentExpression();
+  }
+
+  /**
+   * assignmentExpression:
+   * : leftHandSideExpression
+   * | leftHandSideExpression ASSIGNOP expression
+   * ;
+   */
+  assignmentExpression(): Token {
+    if (this._lookahead.type === IDENTIFIER) {
+      const identifier = this._eat(IDENTIFIER).value;
+      const operator = this.getAssignmentOperator();
+      return {
+        type: ASSIGNMENT_EXPRESSION,
+        operator: operator,
+        left: {
+          type: IDENTIFIER,
+          name: identifier,
+        },
+        right: this.expression(),
+      };
+    }
+
     return this.additiveExpression();
+  }
+
+  /**
+   * getAssignmentOperator:
+   * : ASSIGNOP
+   * ;
+   */
+  getAssignmentOperator(): string | any {
+    if (this._lookahead.type === SIMPLE_ASSIGNMENT) {
+      return this._eat(SIMPLE_ASSIGNMENT).value;
+    } else {
+      return this._eat(COMPLEX_ASSIGNMENT).value;
+    }
   }
 
   /**

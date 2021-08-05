@@ -4,6 +4,7 @@
  */
 export type Token = {
   type: string;
+  name?: string;
   value?: any;
   body?: any;
   expression?: Token;

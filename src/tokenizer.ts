@@ -36,12 +36,12 @@ export class Tokenizer {
       return { type: EOF, value: undefined };
     }
 
-    const defaultToken = { type: UNDEFINED, value: undefined };
+    let token: Token = { type: UNDEFINED, value: undefined };
 
     for (const tokenTypeDef of TOKEN_TYPE_SPECS) {
-      let token = this.__pattenMatch(tokenTypeDef.pattern);
+      let matchedToken = this.__pattenMatch(tokenTypeDef.pattern);
 
-      if (!!token) {
+      if (!!matchedToken) {
         // Found white space
         // Ignore it
         if (tokenTypeDef.type === SKIP) {
@@ -50,17 +50,18 @@ export class Tokenizer {
 
         // If it has calback to ignore it
         if (tokenTypeDef.callback) {
-          token = tokenTypeDef.callback(token);
+          matchedToken = tokenTypeDef.callback(matchedToken);
         }
 
         // Return the token
-        return {
+        token = {
           type: tokenTypeDef.type,
-          value: token,
+          value: matchedToken,
         };
+        break;
       }
     }
-    return defaultToken;
+    return token;
   }
 
   /**

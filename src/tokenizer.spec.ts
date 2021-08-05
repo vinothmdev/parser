@@ -1,5 +1,10 @@
 import { Tokenizer } from "./tokenizer";
-import { NUMERIC_LITERAL, STRING_LITERAL, UNDEFINED } from "./types";
+import {
+  IDENTIFIER,
+  NUMERIC_LITERAL,
+  STRING_LITERAL,
+  UNDEFINED,
+} from "./types";
 
 test("Parse and return number literal", () => {
   const expected_value = {
@@ -27,8 +32,8 @@ test("Parse and return string literal in single quote", () => {
 
 test("Throw error for undefined", () => {
   const expected_value = {
-    type: UNDEFINED,
-    value: undefined,
+    type: IDENTIFIER,
+    value: "apple",
   };
   expect(new Tokenizer("apple").next()).toStrictEqual(expected_value);
 });
