@@ -7,6 +7,8 @@ export const EXPRESSION_STATEMENT = "ExpressionStatement";
 export const EMPTY_STATE = "EmptyStatement";
 export const BINARY_EXPRESSION = "BinaryExpression";
 export const ASSIGNMENT_EXPRESSION = "AssignmentExpression";
+export const VARIABLE_DECLARATOR = "VariableDeclarator";
+export const VARIABLE_DECLARATION = "VariableDeclaration";
 
 export const SKIP = null;
 export const WHITE_SPACE = SKIP;
@@ -14,6 +16,7 @@ export const COMMENTS = SKIP;
 export const EMPTY_LINE = SKIP;
 export const EOF = SKIP;
 export const LINE_TERMINATOR = ";";
+export const COMMA = ",";
 export const OPEN_BLOCK = "{";
 export const CLOSE_BLOCK = "}";
 export const ADD_OPERATOR = "ADD_OPERATOR";
@@ -23,6 +26,7 @@ export const CLOSE_PARENTHESIS = ")";
 export const SIMPLE_ASSIGNMENT = "SIMPLE_ASSIGNMENT";
 export const COMPLEX_ASSIGNMENT = "COMPLEX_ASSIGNMENT";
 export const IDENTIFIER = "Identifier";
+export const LET = "let";
 
 export const TOKEN_TYPE_SPECS = [
   { type: NUMERIC_LITERAL, pattern: /^\d+/ },
@@ -49,5 +53,7 @@ export const TOKEN_TYPE_SPECS = [
   { type: OPEN_PARENTHESIS, pattern: /^\(/ },
   { type: CLOSE_PARENTHESIS, pattern: /^\)/ },
   { type: SIMPLE_ASSIGNMENT, pattern: /^=/ },
+  { type: LET, pattern: /^\blet\b/ },
+  { type: COMMA, pattern: /^,/ },
   { type: IDENTIFIER, pattern: /^\w+/ },
 ];

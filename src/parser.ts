@@ -8,10 +8,12 @@ import {
   BLOCK_STATEMENT,
   CLOSE_BLOCK,
   CLOSE_PARENTHESIS,
+  COMMA,
   COMPLEX_ASSIGNMENT,
   EMPTY_STATE,
   EXPRESSION_STATEMENT,
   IDENTIFIER,
+  LET,
   LINE_TERMINATOR,
   MULTIPLICATION_OPERATOR,
   NUMERIC_LITERAL,
@@ -20,6 +22,8 @@ import {
   PROGRAM,
   SIMPLE_ASSIGNMENT,
   STRING_LITERAL,
+  VARIABLE_DECLARATION,
+  VARIABLE_DECLARATOR,
 } from "./types";
 
 /**
@@ -83,6 +87,8 @@ export class Parser {
         return this.blockStatement();
       case LINE_TERMINATOR:
         return this.emptyStatement();
+      case LET:
+        return this.declarationStatement(LET);
       default:
         return this.expressionStatement();
     }
@@ -118,6 +124,61 @@ export class Parser {
     const expression = this.expression();
     this._eat(LINE_TERMINATOR);
     return { type: EXPRESSION_STATEMENT, expression };
+  }
+
+  /**
+   * declarationStatement:
+   * : LET IDENTIFIER
+   * : LET IDENTIFIER ASSIGNMENT_EXPRESSION
+   * ;
+   */
+  declarationStatement(kind: string): Token {
+    const declarationList = this.declarationList();
+    return {
+      type: VARIABLE_DECLARATION,
+      kind: kind,
+      declarations: declarationList,
+    };
+  }
+
+  /**
+   * declarationList:
+   * : VariableDeclaration
+   * | VariableDeclaration COMMA declarationList
+   * ;
+   */
+  declarationList(): Token[] {
+    const declarations: Token[] = [];
+    this._eat(LET);
+    declarations.push(this.variableDeclaration());
+    while (this._lookahead.type === COMMA) {
+      this._eat(COMMA);
+      declarations.push(this.variableDeclaration());
+    }
+    this._eat(LINE_TERMINATOR);
+    return declarations;
+  }
+
+  /**
+   * variableDeclaration:
+   * : LET IDENTIFIER
+   * ;
+   */
+  variableDeclaration(): Token {
+    const identifier = this._eat(IDENTIFIER).value;
+    let value = null;
+    if (this._lookahead.type === SIMPLE_ASSIGNMENT) {
+      this._eat(SIMPLE_ASSIGNMENT);
+      value = this.literal();
+    }
+    return {
+      type: VARIABLE_DECLARATOR,
+      id: {
+        type: IDENTIFIER,
+        name: identifier,
+      },
+      init: value,
+    };
   }
 
   /**

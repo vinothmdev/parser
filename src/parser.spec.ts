@@ -426,6 +426,153 @@ test("Parsing simple assignment", () => {
   expect(result).toStrictEqual(expected_value);
 });
 
+test("Single variable declaration ", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "y",
+            },
+            init: null,
+          },
+        ],
+        kind: "let",
+      },
+    ],
+  };
+  const result = parser.parse(`let y;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Multiple variable declaration", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "a",
+            },
+            init: null,
+          },
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "b",
+            },
+            init: null,
+          },
+        ],
+        kind: "let",
+      },
+    ],
+  };
+  const result = parser.parse(`let a, b;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("multiple variable declaration, with partial initialization", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "c",
+            },
+            init: null,
+          },
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "d",
+            },
+            init: {
+              type: "NumericLiteral",
+              value: 10,
+            },
+          },
+        ],
+        kind: "let",
+      },
+    ],
+  };
+  const result = parser.parse(`let c, d = 10;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Sing variable declaration with initial value", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "e",
+            },
+            init: {
+              type: "NumericLiteral",
+              value: 10,
+            },
+          },
+        ],
+        kind: "let",
+      },
+    ],
+  };
+  const result = parser.parse(`
+  let e = 10;
+  `);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Variable declaration", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "AssignmentExpression",
+          operator: "=",
+          left: {
+            type: "Identifier",
+            name: "d",
+          },
+          right: {
+            type: "NumericLiteral",
+            value: 10,
+          },
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`
+  d = 10;
+  `);
+  expect(result).toStrictEqual(expected_value);
+});
+
 test("Throw error for undefined", () => {
   const t = () => {
     parser.parse("50");
