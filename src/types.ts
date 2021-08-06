@@ -27,6 +27,7 @@ export const SIMPLE_ASSIGNMENT = "SIMPLE_ASSIGNMENT";
 export const COMPLEX_ASSIGNMENT = "COMPLEX_ASSIGNMENT";
 export const IDENTIFIER = "Identifier";
 export const LET = "let";
+export const VAR = "var";
 
 export const TOKEN_TYPE_SPECS = [
   { type: NUMERIC_LITERAL, pattern: /^\d+/ },
@@ -54,6 +55,7 @@ export const TOKEN_TYPE_SPECS = [
   { type: CLOSE_PARENTHESIS, pattern: /^\)/ },
   { type: SIMPLE_ASSIGNMENT, pattern: /^=/ },
   { type: LET, pattern: /^\blet\b/ },
+  { type: VAR, pattern: /^\bvar\b/ },
   { type: COMMA, pattern: /^,/ },
   { type: IDENTIFIER, pattern: /^\w+/ },
 ];

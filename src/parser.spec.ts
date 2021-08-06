@@ -546,7 +546,127 @@ test("Sing variable declaration with initial value", () => {
   expect(result).toStrictEqual(expected_value);
 });
 
-test("Variable declaration", () => {
+test("Var - Single variable declaration ", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "y",
+            },
+            init: null,
+          },
+        ],
+        kind: "var",
+      },
+    ],
+  };
+  const result = parser.parse(`var y;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Var - Multiple variable declaration", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "a",
+            },
+            init: null,
+          },
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "b",
+            },
+            init: null,
+          },
+        ],
+        kind: "var",
+      },
+    ],
+  };
+  const result = parser.parse(`var a, b;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("var - multiple variable declaration, with partial initialization", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "c",
+            },
+            init: null,
+          },
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "d",
+            },
+            init: {
+              type: "NumericLiteral",
+              value: 10,
+            },
+          },
+        ],
+        kind: "var",
+      },
+    ],
+  };
+  const result = parser.parse(`var c, d = 10;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Var - Sing variable declaration with initial value", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "e",
+            },
+            init: {
+              type: "NumericLiteral",
+              value: 10,
+            },
+          },
+        ],
+        kind: "var",
+      },
+    ],
+  };
+  const result = parser.parse(`
+  var e = 10;
+  `);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Variable assignment", () => {
   const expected_value = {
     type: "Program",
     body: [

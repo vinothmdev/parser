@@ -22,6 +22,7 @@ import {
   PROGRAM,
   SIMPLE_ASSIGNMENT,
   STRING_LITERAL,
+  VAR,
   VARIABLE_DECLARATION,
   VARIABLE_DECLARATOR,
 } from "./types";
@@ -89,6 +90,8 @@ export class Parser {
         return this.emptyStatement();
       case LET:
         return this.declarationStatement(LET);
+      case VAR:
+        return this.declarationStatement(VAR);
       default:
         return this.expressionStatement();
     }
@@ -133,7 +136,7 @@ export class Parser {
    * ;
    */
   declarationStatement(kind: string): Token {
-    const declarationList = this.declarationList();
+    const declarationList = this.declarationList(kind);
     return {
       type: VARIABLE_DECLARATION,
       kind: kind,
@@ -147,9 +150,9 @@ export class Parser {
    * | VariableDeclaration COMMA declarationList
    * ;
    */
-  declarationList(): Token[] {
+  declarationList(kind: string): Token[] {
     const declarations: Token[] = [];
-    this._eat(LET);
+    this._eat(kind);
     declarations.push(this.variableDeclaration());
     while (this._lookahead.type === COMMA) {
       this._eat(COMMA);
