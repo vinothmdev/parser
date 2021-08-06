@@ -482,6 +482,49 @@ test("Multiple variable declaration", () => {
   expect(result).toStrictEqual(expected_value);
 });
 
+test("Multiple variable declaration with single assignment", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "VariableDeclaration",
+        declarations: [
+          {
+            type: "VariableDeclarator",
+            id: {
+              type: "Identifier",
+              name: "a",
+            },
+            init: {
+              type: "AssignmentExpression",
+              operator: "=",
+              left: {
+                type: "Identifier",
+                name: "b",
+              },
+              right: {
+                type: "AssignmentExpression",
+                operator: "=",
+                left: {
+                  type: "Identifier",
+                  name: "c",
+                },
+                right: {
+                  type: "NumericLiteral",
+                  value: 42,
+                },
+              },
+            },
+          },
+        ],
+        kind: "let",
+      },
+    ],
+  };
+  const result = parser.parse(`let a = b = c = 42;`);
+  expect(result).toStrictEqual(expected_value);
+});
+
 test("multiple variable declaration, with partial initialization", () => {
   const expected_value = {
     type: "Program",

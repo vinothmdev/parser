@@ -172,7 +172,7 @@ export class Parser {
     let value = null;
     if (this._lookahead.type === SIMPLE_ASSIGNMENT) {
       this._eat(SIMPLE_ASSIGNMENT);
-      value = this.literal();
+      value = this.expression();
     }
     return {
       type: VARIABLE_DECLARATOR,
