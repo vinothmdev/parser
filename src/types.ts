@@ -30,6 +30,7 @@ export const COMPLEX_ASSIGNMENT = "COMPLEX_ASSIGNMENT";
 export const IDENTIFIER = "Identifier";
 export const LET = "let";
 export const VAR = "var";
+export const RELATIONAL_EXPRESSION = "RELATIONAL_EXPRESSION";
 
 export const TOKEN_TYPE_SPECS = [
   { type: NUMERIC_LITERAL, pattern: /^\d+/ },
@@ -62,4 +63,5 @@ export const TOKEN_TYPE_SPECS = [
   { type: ELSE_STATEMENT, pattern: /^\belse\b/ },
   { type: COMMA, pattern: /^,/ },
   { type: IDENTIFIER, pattern: /^\w+/ },
+  { type: RELATIONAL_EXPRESSION, pattern: /^(<=)|^(>=)|^<|^>/ },
 ];
