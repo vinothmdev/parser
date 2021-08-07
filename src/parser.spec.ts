@@ -8,6 +8,20 @@ beforeAll(() => {
 });
 
 afterAll((done) => {
+  console.log(
+    JSON.stringify(
+      parser.parse(
+        `
+    if (x + 1 < 0) {
+      x = 0;
+      y = 0;
+      // Test
+    } else if (x > y + 1) {
+    }
+    `
+      )
+    )
+  );
   done();
 });
 
@@ -1065,7 +1079,7 @@ test("If-else with simple condition", () => {
   expect(result).toStrictEqual(expected_value);
 });
 
-test("If x >= 0", () => {
+test("If with relation operators", () => {
   const expected_value = {
     type: "Program",
     body: [
@@ -1073,12 +1087,90 @@ test("If x >= 0", () => {
         type: "IfStatement",
         test: {
           type: "BinaryExpression",
-          operator: ">=",
+          operator: ">",
+          left: { type: "Identifier", name: "x" },
+          right: { type: "NumericLiteral", value: 0 },
+        },
+        consequent: {
+          type: "BlockStatement",
+          body: [
+            {
+              type: "IfStatement",
+              test: {
+                type: "BinaryExpression",
+                operator: "<",
+                left: { type: "Identifier", name: "x" },
+                right: { type: "NumericLiteral", value: 0 },
+              },
+              consequent: {
+                type: "BlockStatement",
+                body: [
+                  {
+                    type: "IfStatement",
+                    test: {
+                      type: "BinaryExpression",
+                      operator: "<=",
+                      left: { type: "Identifier", name: "x" },
+                      right: { type: "NumericLiteral", value: 0 },
+                    },
+                    consequent: {
+                      type: "BlockStatement",
+                      body: [
+                        {
+                          type: "IfStatement",
+                          test: {
+                            type: "BinaryExpression",
+                            operator: ">=",
+                            left: { type: "Identifier", name: "x" },
+                            right: { type: "NumericLiteral", value: 0 },
+                          },
+                          consequent: { type: "BlockStatement", body: [] },
+                          alternate: null,
+                        },
+                      ],
+                    },
+                    alternate: null,
+                  },
+                ],
+              },
+              alternate: null,
+            },
+          ],
+        },
+        alternate: null,
+      },
+    ],
+  };
+  const result = parser.parse(`
+  if (x > 0) {
+    if (x < 0) {
+      if (x <= 0) {
+        if (x >= 0) {
+        }
+      }
+    }
+  }
+  `);
+  let test = JSON.stringify(result);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("If with relation operators and arithmatic", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "IfStatement",
+        test: {
+          type: "BinaryExpression",
+          operator: "<",
           left: {
-            type: "Identifier",
-            name: "x",
+            type: "BinaryExpression",
+            operator: "+",
+            left: { type: "Identifier", name: "x" },
+            right: { type: "NumericLiteral", value: 1 },
           },
-          right: { type: "NumericLiteral", value: 1 },
+          right: { type: "NumericLiteral", value: 0 },
         },
         consequent: {
           type: "BlockStatement",
@@ -1088,47 +1180,47 @@ test("If x >= 0", () => {
               expression: {
                 type: "AssignmentExpression",
                 operator: "=",
-                left: {
-                  type: "Identifier",
-                  name: "x",
-                },
-                right: {
-                  type: "NumericLiteral",
-                  value: 1,
-                },
+                left: { type: "Identifier", name: "x" },
+                right: { type: "NumericLiteral", value: 0 },
               },
             },
-          ],
-        },
-        alternate: {
-          type: "BlockStatement",
-          body: [
             {
               type: "ExpressionStatement",
               expression: {
                 type: "AssignmentExpression",
                 operator: "=",
-                left: {
-                  type: "Identifier",
-                  name: "x",
-                },
-                right: {
-                  type: "NumericLiteral",
-                  value: 2,
-                },
+                left: { type: "Identifier", name: "y" },
+                right: { type: "NumericLiteral", value: 0 },
               },
             },
           ],
+        },
+        alternate: {
+          type: "IfStatement",
+          test: {
+            type: "BinaryExpression",
+            operator: ">",
+            left: { type: "Identifier", name: "x" },
+            right: {
+              type: "BinaryExpression",
+              operator: "+",
+              left: { type: "Identifier", name: "y" },
+              right: { type: "NumericLiteral", value: 1 },
+            },
+          },
+          consequent: { type: "BlockStatement", body: [] },
+          alternate: null,
         },
       },
     ],
   };
   const result = parser.parse(`
-    if ( x >= 1 ) {
-      x = 1;
-    } else {
-      x = 2;
-    }
+  if (x + 1 < 0) {
+    x = 0;
+    y = 0;
+    // Test
+  } else if (x > y + 1) {
+  }
   `);
   let test = JSON.stringify(result);
   expect(result).toStrictEqual(expected_value);
