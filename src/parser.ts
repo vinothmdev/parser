@@ -20,6 +20,7 @@ import {
   LET,
   LINE_TERMINATOR,
   MULTIPLICATION_OPERATOR,
+  NULL_LITERAL,
   NUMERIC_LITERAL,
   OPEN_BLOCK,
   OPEN_PARENTHESIS,
@@ -27,6 +28,7 @@ import {
   RELATIONAL_OPERATOR,
   SIMPLE_ASSIGNMENT,
   STRING_LITERAL,
+  TRUE,
   VAR,
   VARIABLE_DECLARATION,
   VARIABLE_DECLARATOR,
@@ -398,6 +400,9 @@ export class Parser {
       case BOOLEAN_LITERAL:
         type = this.booleanLiteral();
         break;
+      case NULL_LITERAL:
+        type = this.nullLiteral();
+        break;
       default:
         throw new Error(`unexpected token '${token.value}'`);
     }
@@ -432,7 +437,17 @@ export class Parser {
    */
   booleanLiteral(): Token {
     const token = this._eat(BOOLEAN_LITERAL);
-    return { type: BOOLEAN_LITERAL, value: token.value };
+    return { type: BOOLEAN_LITERAL, value: token.value === TRUE };
+  }
+
+  /**
+   * nullLiteral:
+   * : NULL
+   * ;
+   */
+  nullLiteral(): Token {
+    const token = this._eat(NULL_LITERAL);
+    return { type: NULL_LITERAL, value: null };
   }
   /**
    * parenthesisExpression:

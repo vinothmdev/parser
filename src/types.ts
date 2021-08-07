@@ -60,7 +60,7 @@ export const TOKEN_TYPE_SPECS = [
   { type: ELSE_STATEMENT, pattern: /^\belse\b/ },
   { type: BOOLEAN_LITERAL, pattern: /^\btrue\b/ },
   { type: BOOLEAN_LITERAL, pattern: /^\bfalse\b/ },
-  { type: NULL, pattern: /^\bnull\b/ },
+  { type: NULL_LITERAL, pattern: /^\bnull\b/ },
   { type: UNDEFINED, pattern: /^\undefined\b/ },
   { type: WHITE_SPACE, pattern: /^\s+/ },
   { type: COMMENTS, pattern: /^\/\/.*/ },
