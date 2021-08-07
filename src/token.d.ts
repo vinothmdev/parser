@@ -10,11 +10,17 @@ export type Token = {
   value?: any;
   body?: any;
   expression?: Token;
-  operator?: string;
+  operator?: string | null;
   left?: Token;
-  right?: Token;
+  right?: Token | null;
   kind?: string;
   declarations?: Token[];
   id?: Token;
   init?: Token | null;
+} & IfStatement;
+
+type IfStatement = {
+  test?: Token;
+  consequent?: Token;
+  alternate?: Token | null;
 };

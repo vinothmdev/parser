@@ -9,6 +9,8 @@ export const BINARY_EXPRESSION = "BinaryExpression";
 export const ASSIGNMENT_EXPRESSION = "AssignmentExpression";
 export const VARIABLE_DECLARATOR = "VariableDeclarator";
 export const VARIABLE_DECLARATION = "VariableDeclaration";
+export const IF_STATEMENT = "IfStatement";
+export const ELSE_STATEMENT = "ElseStatement";
 
 export const SKIP = null;
 export const WHITE_SPACE = SKIP;
@@ -56,6 +58,8 @@ export const TOKEN_TYPE_SPECS = [
   { type: SIMPLE_ASSIGNMENT, pattern: /^=/ },
   { type: LET, pattern: /^\blet\b/ },
   { type: VAR, pattern: /^\bvar\b/ },
+  { type: IF_STATEMENT, pattern: /^\bif\b/ },
+  { type: ELSE_STATEMENT, pattern: /^\belse\b/ },
   { type: COMMA, pattern: /^,/ },
   { type: IDENTIFIER, pattern: /^\w+/ },
 ];
