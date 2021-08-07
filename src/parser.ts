@@ -12,6 +12,7 @@ import {
   COMPLEX_ASSIGNMENT,
   ELSE_STATEMENT,
   EMPTY_STATE,
+  EQUALITY_OPERATOR,
   EXPRESSION_STATEMENT,
   IDENTIFIER,
   IF_STATEMENT,
@@ -248,7 +249,7 @@ export class Parser {
    * ;
    */
   assignmentExpression(): Token {
-    const left = this.relationalExpression();
+    const left = this.equalityExpression();
     if (!this.isAssignmentOperator()) {
       return left;
     }
@@ -305,6 +306,19 @@ export class Parser {
       };
     }
     return left;
+  }
+
+  /**
+   * equalityExpression:
+   * : equalityExpression
+   * | equalityExpression RELOP binaryExpression
+   * ;
+   */
+  equalityExpression(): Token {
+    return this.binaryExpression(
+      EQUALITY_OPERATOR,
+      this.relationalExpression.bind(this)
+    );
   }
 
   /**

@@ -1,7 +1,6 @@
 export const PROGRAM = "Program";
 export const NUMERIC_LITERAL = "NumericLiteral";
 export const STRING_LITERAL = "StringLiteral";
-export const UNDEFINED = "UNDEFINED";
 export const BLOCK_STATEMENT = "BlockStatement";
 export const EXPRESSION_STATEMENT = "ExpressionStatement";
 export const EMPTY_STATE = "EmptyStatement";
@@ -28,9 +27,18 @@ export const CLOSE_PARENTHESIS = ")";
 export const SIMPLE_ASSIGNMENT = "SIMPLE_ASSIGNMENT";
 export const COMPLEX_ASSIGNMENT = "COMPLEX_ASSIGNMENT";
 export const IDENTIFIER = "Identifier";
+export const RELATIONAL_OPERATOR = "RELATIONAL_OPERATOR";
+export const EQUALITY_OPERATOR = "EQUALITY_OPERATOR";
+
+/**
+ * keywords
+ */
+export const UNDEFINED = "undefined";
 export const LET = "let";
 export const VAR = "var";
-export const RELATIONAL_OPERATOR = "RELATIONAL_OPERATOR";
+export const TRUE = "true";
+export const FALSE = "false";
+export const NULL = "null";
 
 export const TOKEN_TYPE_SPECS = [
   { type: NUMERIC_LITERAL, pattern: /^\d+/ },
@@ -44,6 +52,14 @@ export const TOKEN_TYPE_SPECS = [
     pattern: /^'(?:[^'\\]|\\.)*'/,
     callback: (str: string) => str.substr(1, str.length - 2),
   },
+  { type: LET, pattern: /^\blet\b/ },
+  { type: VAR, pattern: /^\bvar\b/ },
+  { type: IF_STATEMENT, pattern: /^\bif\b/ },
+  { type: ELSE_STATEMENT, pattern: /^\belse\b/ },
+  { type: TRUE, pattern: /^\btrue\b/ },
+  { type: FALSE, pattern: /^\bfalse\b/ },
+  { type: NULL, pattern: /^\bnull\b/ },
+  { type: UNDEFINED, pattern: /^\undefined\b/ },
   { type: WHITE_SPACE, pattern: /^\s+/ },
   { type: COMMENTS, pattern: /^\/\/.*/ },
   { type: COMMENTS, pattern: /^\/\*[\s\S]*?\*\// },
@@ -56,11 +72,8 @@ export const TOKEN_TYPE_SPECS = [
   { type: MULTIPLICATION_OPERATOR, pattern: /^[\*|\/]/ },
   { type: OPEN_PARENTHESIS, pattern: /^\(/ },
   { type: CLOSE_PARENTHESIS, pattern: /^\)/ },
+  { type: EQUALITY_OPERATOR, pattern: /^[!=]=/ },
   { type: SIMPLE_ASSIGNMENT, pattern: /^=/ },
-  { type: LET, pattern: /^\blet\b/ },
-  { type: VAR, pattern: /^\bvar\b/ },
-  { type: IF_STATEMENT, pattern: /^\bif\b/ },
-  { type: ELSE_STATEMENT, pattern: /^\belse\b/ },
   { type: COMMA, pattern: /^,/ },
   { type: IDENTIFIER, pattern: /^\w+/ },
   { type: RELATIONAL_OPERATOR, pattern: /^(<=)|^(>=)|^<|^>/ },

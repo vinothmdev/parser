@@ -8,20 +8,6 @@ beforeAll(() => {
 });
 
 afterAll((done) => {
-  console.log(
-    JSON.stringify(
-      parser.parse(
-        `
-    if (x + 1 < 0) {
-      x = 0;
-      y = 0;
-      // Test
-    } else if (x > y + 1) {
-    }
-    `
-      )
-    )
-  );
   done();
 });
 
