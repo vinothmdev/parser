@@ -19,6 +19,8 @@ import {
   IF_STATEMENT,
   LET,
   LINE_TERMINATOR,
+  LOGICAL_AND_OPERATOR,
+  LOGICAL_OR_OPERATOR,
   MULTIPLICATION_OPERATOR,
   NULL_LITERAL,
   NUMERIC_LITERAL,
@@ -252,7 +254,7 @@ export class Parser {
    * ;
    */
   assignmentExpression(): Token {
-    const left = this.equalityExpression();
+    const left = this.logicalORExpression();
     if (!this.isAssignmentOperator()) {
       return left;
     }
@@ -309,6 +311,32 @@ export class Parser {
       };
     }
     return left;
+  }
+
+  /**
+   * logicalORExpression:
+   * : logicalORExpression
+   * | logicalORExpression OR logicalORExpression
+   * ;
+   */
+  logicalORExpression(): Token {
+    return this.binaryExpression(
+      LOGICAL_OR_OPERATOR,
+      this.logicalAndExpression.bind(this)
+    );
+  }
+
+  /**
+   * logicalAndExpression:
+   * : logicalAndExpression
+   * | logicalAndExpression && logicalORExpression
+   * ;
+   */
+  logicalAndExpression(): Token {
+    return this.binaryExpression(
+      LOGICAL_AND_OPERATOR,
+      this.equalityExpression.bind(this)
+    );
   }
 
   /**

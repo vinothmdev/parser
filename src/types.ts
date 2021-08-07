@@ -31,6 +31,8 @@ export const COMPLEX_ASSIGNMENT = "COMPLEX_ASSIGNMENT";
 export const IDENTIFIER = "Identifier";
 export const RELATIONAL_OPERATOR = "RELATIONAL_OPERATOR";
 export const EQUALITY_OPERATOR = "EQUALITY_OPERATOR";
+export const LOGICAL_AND_OPERATOR = "LOGICAL_AND_OPERATOR";
+export const LOGICAL_OR_OPERATOR = "LOGICAL_OR_OPERATOR";
 
 /**
  * keywords
@@ -62,6 +64,8 @@ export const TOKEN_TYPE_SPECS = [
   { type: BOOLEAN_LITERAL, pattern: /^\bfalse\b/ },
   { type: NULL_LITERAL, pattern: /^\bnull\b/ },
   { type: UNDEFINED, pattern: /^\undefined\b/ },
+  { type: LOGICAL_AND_OPERATOR, pattern: /^(&&)/ },
+  { type: LOGICAL_OR_OPERATOR, pattern: /^(\|\|)/ },
   { type: WHITE_SPACE, pattern: /^\s+/ },
   { type: COMMENTS, pattern: /^\/\/.*/ },
   { type: COMMENTS, pattern: /^\/\*[\s\S]*?\*\// },
