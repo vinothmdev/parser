@@ -1072,16 +1072,13 @@ test("If x >= 0", () => {
       {
         type: "IfStatement",
         test: {
-          type: "ExpressionStatement",
-          expression: {
-            type: "BinaryExpression",
-            operator: ">=",
-            left: {
-              type: "Identifier",
-              name: "x",
-            },
-            right: { type: "NumericLiteral", value: 1 },
+          type: "BinaryExpression",
+          operator: ">=",
+          left: {
+            type: "Identifier",
+            name: "x",
           },
+          right: { type: "NumericLiteral", value: 1 },
         },
         consequent: {
           type: "BlockStatement",
@@ -1133,6 +1130,7 @@ test("If x >= 0", () => {
       x = 2;
     }
   `);
+  let test = JSON.stringify(result);
   expect(result).toStrictEqual(expected_value);
 });
 

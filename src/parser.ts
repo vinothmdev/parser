@@ -22,6 +22,7 @@ import {
   OPEN_BLOCK,
   OPEN_PARENTHESIS,
   PROGRAM,
+  RELATIONAL_OPERATOR,
   SIMPLE_ASSIGNMENT,
   STRING_LITERAL,
   VAR,
@@ -157,7 +158,7 @@ export class Parser {
   ifStatement(): Token {
     this._eat(IF_STATEMENT);
     this._eat(OPEN_PARENTHESIS);
-    const condition = this.conditionalExpression();
+    const condition = this.assignmentExpression();
     this._eat(CLOSE_PARENTHESIS);
     const consequent = this.statement();
     const alternate = this.elseStatement();
@@ -167,20 +168,6 @@ export class Parser {
       consequent: consequent,
       alternate: alternate,
     };
-  }
-
-  /**
-   * conditionalExpression:
-   * : identifier
-   * ;
-   */
-  conditionalExpression(): Token {
-    const identifier = this._eat(IDENTIFIER).value;
-    if (this._lookahead.type === CLOSE_PARENTHESIS) {
-      return { type: IDENTIFIER, name: identifier };
-    } else {
-      return { type: IDENTIFIER, name: identifier };
-    }
   }
 
   /**
@@ -220,7 +207,7 @@ export class Parser {
    * ;
    */
   variableDeclaration(): Token {
-    const identifier = this._eat(IDENTIFIER).value;
+    const identifier = this.identifier();
     let value = null;
     if (this._lookahead.type === SIMPLE_ASSIGNMENT) {
       this._eat(SIMPLE_ASSIGNMENT);
@@ -228,11 +215,20 @@ export class Parser {
     }
     return {
       type: VARIABLE_DECLARATOR,
-      id: {
-        type: IDENTIFIER,
-        name: identifier,
-      },
+      id: identifier,
       init: value,
+    };
+  }
+
+  /**
+   * identifier:
+   * : IDENTIFIER
+   * ;
+   */
+  identifier(): Token {
+    return {
+      type: IDENTIFIER,
+      name: this._eat(IDENTIFIER).value,
     };
   }
 
@@ -252,21 +248,29 @@ export class Parser {
    * ;
    */
   assignmentExpression(): Token {
-    if (this._lookahead.type === IDENTIFIER) {
-      const identifier = this._eat(IDENTIFIER).value;
-      const operator = this.getAssignmentOperator();
-      return {
-        type: ASSIGNMENT_EXPRESSION,
-        operator: operator,
-        left: {
-          type: IDENTIFIER,
-          name: identifier,
-        },
-        right: operator ? this.expression() : null,
-      };
+    const left = this.relationalExpression();
+    if (!this.isAssignmentOperator()) {
+      return left;
     }
+    const operator = this.getAssignmentOperator();
+    return {
+      type: ASSIGNMENT_EXPRESSION,
+      operator: operator,
+      left: left,
+      right: this.assignmentExpression(),
+    };
+  }
 
-    return this.additiveExpression();
+  /**
+   * isAssignmentOperator:
+   * : ASSIGNOP
+   * ;
+   */
+  isAssignmentOperator(): boolean {
+    return (
+      this._lookahead.type === SIMPLE_ASSIGNMENT ||
+      this._lookahead.type === COMPLEX_ASSIGNMENT
+    );
   }
 
   /**
@@ -308,6 +312,19 @@ export class Parser {
   }
 
   /**
+   * relationalExpression:
+   * : binaryExpression
+   * | binaryExpression RELOP binaryExpression
+   * ;
+   */
+  relationalExpression(): Token {
+    return this.binaryExpression(
+      RELATIONAL_OPERATOR,
+      this.additiveExpression.bind(this)
+    );
+  }
+
+  /**
    * additiveExpression:
    * : multiplicativeExpression
    * | multiplicativeExpression OPERATOR Literal
@@ -329,8 +346,25 @@ export class Parser {
   multiplicativeExpression(): Token {
     return this.binaryExpression(
       MULTIPLICATION_OPERATOR,
-      this.literal.bind(this)
+      this.primaryExpression.bind(this)
     );
+  }
+
+  /**
+   * primaryExpression:
+   * : Literal
+   * | IDENTIFIER
+   * | OPEN_PARENTHESIS Expression CLOSE_PARENTHESIS
+   * ;
+   */
+  primaryExpression(): Token {
+    if (this._lookahead.type === IDENTIFIER) {
+      return this.identifier();
+    } else if (this._lookahead.type === OPEN_PARENTHESIS) {
+      return this.parenthesisExpression();
+    } else {
+      return this.literal();
+    }
   }
 
   /**
@@ -349,9 +383,6 @@ export class Parser {
         break;
       case STRING_LITERAL:
         type = this.stringLiteral();
-        break;
-      case OPEN_PARENTHESIS:
-        type = this.parenthesisExpression();
         break;
       default:
         throw new Error(`unexpected token '${token.value}'`);
