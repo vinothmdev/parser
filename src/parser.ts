@@ -6,6 +6,7 @@ import {
   ASSIGNMENT_EXPRESSION,
   BINARY_EXPRESSION,
   BLOCK_STATEMENT,
+  BOOLEAN_LITERAL,
   CLOSE_BLOCK,
   CLOSE_PARENTHESIS,
   COMMA,
@@ -394,6 +395,9 @@ export class Parser {
       case STRING_LITERAL:
         type = this.stringLiteral();
         break;
+      case BOOLEAN_LITERAL:
+        type = this.booleanLiteral();
+        break;
       default:
         throw new Error(`unexpected token '${token.value}'`);
     }
@@ -420,6 +424,16 @@ export class Parser {
     return { type: STRING_LITERAL, value: token.value };
   }
 
+  /**
+   * booleanLiteral:
+   * : TRUE
+   * | FALSE
+   * ;
+   */
+  booleanLiteral(): Token {
+    const token = this._eat(BOOLEAN_LITERAL);
+    return { type: BOOLEAN_LITERAL, value: token.value };
+  }
   /**
    * parenthesisExpression:
    * : OPEN_PARENTHESIS expression CLOSE_PARENTHESIS

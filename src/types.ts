@@ -1,6 +1,8 @@
 export const PROGRAM = "Program";
 export const NUMERIC_LITERAL = "NumericLiteral";
 export const STRING_LITERAL = "StringLiteral";
+export const BOOLEAN_LITERAL = "BooleanLiteral";
+export const NULL_LITERAL = "NullLiteral";
 export const BLOCK_STATEMENT = "BlockStatement";
 export const EXPRESSION_STATEMENT = "ExpressionStatement";
 export const EMPTY_STATE = "EmptyStatement";
@@ -56,8 +58,8 @@ export const TOKEN_TYPE_SPECS = [
   { type: VAR, pattern: /^\bvar\b/ },
   { type: IF_STATEMENT, pattern: /^\bif\b/ },
   { type: ELSE_STATEMENT, pattern: /^\belse\b/ },
-  { type: TRUE, pattern: /^\btrue\b/ },
-  { type: FALSE, pattern: /^\bfalse\b/ },
+  { type: BOOLEAN_LITERAL, pattern: /^\btrue\b/ },
+  { type: BOOLEAN_LITERAL, pattern: /^\bfalse\b/ },
   { type: NULL, pattern: /^\bnull\b/ },
   { type: UNDEFINED, pattern: /^\undefined\b/ },
   { type: WHITE_SPACE, pattern: /^\s+/ },
