@@ -10,9 +10,11 @@ import {
   CLOSE_PARENTHESIS,
   COMMA,
   COMPLEX_ASSIGNMENT,
+  ELSE_STATEMENT,
   EMPTY_STATE,
   EXPRESSION_STATEMENT,
   IDENTIFIER,
+  IF_STATEMENT,
   LET,
   LINE_TERMINATOR,
   MULTIPLICATION_OPERATOR,
@@ -92,6 +94,8 @@ export class Parser {
         return this.declarationStatement(LET);
       case VAR:
         return this.declarationStatement(VAR);
+      case IF_STATEMENT:
+        return this.ifStatement();
       default:
         return this.expressionStatement();
     }
@@ -142,6 +146,54 @@ export class Parser {
       kind: kind,
       declarations: declarationList,
     };
+  }
+
+  /**
+   * ifStatement:
+   * : IF OPEN_PARENTHESIS Expression CLOSE_PARENTHESIS Statement
+   * | IF OPEN_PARENTHESIS Expression CLOSE_PARENTHESIS Statement ELSE Statement
+   * ;
+   */
+  ifStatement(): Token {
+    this._eat(IF_STATEMENT);
+    this._eat(OPEN_PARENTHESIS);
+    const condition = this.conditionalExpression();
+    this._eat(CLOSE_PARENTHESIS);
+    const consequent = this.statement();
+    const alternate = this.elseStatement();
+    return {
+      type: IF_STATEMENT,
+      test: condition,
+      consequent: consequent,
+      alternate: alternate,
+    };
+  }
+
+  /**
+   * conditionalExpression:
+   * : identifier
+   * ;
+   */
+  conditionalExpression(): Token {
+    const identifier = this._eat(IDENTIFIER).value;
+    if (this._lookahead.type === CLOSE_PARENTHESIS) {
+      return { type: IDENTIFIER, name: identifier };
+    } else {
+      return { type: IDENTIFIER, name: identifier };
+    }
+  }
+
+  /**
+   * elseStatement:
+   * : ELSE Statement
+   * ;
+   */
+  elseStatement(): Token | null {
+    if (this._lookahead.type === ELSE_STATEMENT) {
+      this._eat(ELSE_STATEMENT);
+      return this.statement();
+    }
+    return null;
   }
 
   /**
@@ -210,7 +262,7 @@ export class Parser {
           type: IDENTIFIER,
           name: identifier,
         },
-        right: this.expression(),
+        right: operator ? this.expression() : null,
       };
     }
 
@@ -222,11 +274,13 @@ export class Parser {
    * : ASSIGNOP
    * ;
    */
-  getAssignmentOperator(): string | any {
+  getAssignmentOperator(): string | null {
     if (this._lookahead.type === SIMPLE_ASSIGNMENT) {
       return this._eat(SIMPLE_ASSIGNMENT).value;
-    } else {
+    } else if (this._lookahead.type === COMPLEX_ASSIGNMENT) {
       return this._eat(COMPLEX_ASSIGNMENT).value;
+    } else {
+      return null;
     }
   }
 

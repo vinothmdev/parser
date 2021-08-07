@@ -736,6 +736,335 @@ test("Variable assignment", () => {
   expect(result).toStrictEqual(expected_value);
 });
 
+test("If with simple condition", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "IfStatement",
+        test: {
+          type: "Identifier",
+          name: "x",
+        },
+        consequent: {
+          type: "BlockStatement",
+          body: [
+            {
+              type: "ExpressionStatement",
+              expression: {
+                type: "AssignmentExpression",
+                operator: "=",
+                left: {
+                  type: "Identifier",
+                  name: "x",
+                },
+                right: {
+                  type: "NumericLiteral",
+                  value: 1,
+                },
+              },
+            },
+          ],
+        },
+        alternate: null,
+      },
+    ],
+  };
+  const result = parser.parse(`
+    if (x) {
+      x = 1;
+    }
+  `);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("If with simple condition without block", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "IfStatement",
+        test: {
+          type: "Identifier",
+          name: "x",
+        },
+        consequent: {
+          type: "ExpressionStatement",
+          expression: {
+            type: "AssignmentExpression",
+            operator: "=",
+            left: {
+              type: "Identifier",
+              name: "x",
+            },
+            right: {
+              type: "NumericLiteral",
+              value: 1,
+            },
+          },
+        },
+        alternate: null,
+      },
+    ],
+  };
+  const result = parser.parse(`
+    if (x) x = 1;
+  `);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Nested if with block", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "IfStatement",
+        test: {
+          type: "Identifier",
+          name: "x",
+        },
+        consequent: {
+          type: "IfStatement",
+          test: {
+            type: "Identifier",
+            name: "x",
+          },
+          consequent: {
+            type: "BlockStatement",
+            body: [
+              {
+                type: "ExpressionStatement",
+                expression: {
+                  type: "AssignmentExpression",
+                  operator: "=",
+                  left: {
+                    type: "Identifier",
+                    name: "x",
+                  },
+                  right: {
+                    type: "NumericLiteral",
+                    value: 1,
+                  },
+                },
+              },
+            ],
+          },
+          alternate: null,
+        },
+        alternate: null,
+      },
+    ],
+  };
+  const result = parser.parse(`
+    if (x) if (x) { x = 1; }
+  `);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Nested if with block else", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "IfStatement",
+        test: {
+          type: "Identifier",
+          name: "x",
+        },
+        consequent: {
+          type: "IfStatement",
+          test: {
+            type: "Identifier",
+            name: "x",
+          },
+          consequent: {
+            type: "BlockStatement",
+            body: [
+              {
+                type: "ExpressionStatement",
+                expression: {
+                  type: "AssignmentExpression",
+                  operator: "=",
+                  left: {
+                    type: "Identifier",
+                    name: "x",
+                  },
+                  right: {
+                    type: "NumericLiteral",
+                    value: 1,
+                  },
+                },
+              },
+            ],
+          },
+          alternate: {
+            type: "BlockStatement",
+            body: [
+              {
+                type: "ExpressionStatement",
+                expression: {
+                  type: "AssignmentExpression",
+                  operator: "=",
+                  left: {
+                    type: "Identifier",
+                    name: "x",
+                  },
+                  right: {
+                    type: "NumericLiteral",
+                    value: 2,
+                  },
+                },
+              },
+            ],
+          },
+        },
+        alternate: null,
+      },
+    ],
+  };
+  const result = parser.parse(`
+    if (x) if (x) { x = 1; } else { x = 2;}
+  `);
+  let test = JSON.stringify(result);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("Nested if-else with nested if block", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "IfStatement",
+        test: {
+          type: "Identifier",
+          name: "x",
+        },
+        consequent: {
+          type: "BlockStatement",
+          body: [
+            {
+              type: "IfStatement",
+              test: {
+                type: "Identifier",
+                name: "x",
+              },
+              consequent: {
+                type: "BlockStatement",
+                body: [
+                  {
+                    type: "ExpressionStatement",
+                    expression: {
+                      type: "AssignmentExpression",
+                      operator: "=",
+                      left: {
+                        type: "Identifier",
+                        name: "x",
+                      },
+                      right: {
+                        type: "NumericLiteral",
+                        value: 1,
+                      },
+                    },
+                  },
+                ],
+              },
+              alternate: null,
+            },
+          ],
+        },
+        alternate: {
+          type: "BlockStatement",
+          body: [
+            {
+              type: "ExpressionStatement",
+              expression: {
+                type: "AssignmentExpression",
+                operator: "=",
+                left: {
+                  type: "Identifier",
+                  name: "x",
+                },
+                right: {
+                  type: "NumericLiteral",
+                  value: 2,
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`
+    if (x) { if (x) { x = 1; } } else { x = 2;}
+  `);
+  let test = JSON.stringify(result);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("If-else with simple condition", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "IfStatement",
+        test: {
+          type: "Identifier",
+          name: "x",
+        },
+        consequent: {
+          type: "BlockStatement",
+          body: [
+            {
+              type: "ExpressionStatement",
+              expression: {
+                type: "AssignmentExpression",
+                operator: "=",
+                left: {
+                  type: "Identifier",
+                  name: "x",
+                },
+                right: {
+                  type: "NumericLiteral",
+                  value: 1,
+                },
+              },
+            },
+          ],
+        },
+        alternate: {
+          type: "BlockStatement",
+          body: [
+            {
+              type: "ExpressionStatement",
+              expression: {
+                type: "AssignmentExpression",
+                operator: "=",
+                left: {
+                  type: "Identifier",
+                  name: "x",
+                },
+                right: {
+                  type: "NumericLiteral",
+                  value: 2,
+                },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  };
+  const result = parser.parse(`
+    if (x) {
+      x = 1;
+    } else {
+      x = 2;
+    }
+  `);
+  expect(result).toStrictEqual(expected_value);
+});
+
 test("Throw error for undefined", () => {
   const t = () => {
     parser.parse("50");
