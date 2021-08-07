@@ -278,14 +278,10 @@ export class Parser {
    * : ASSIGNOP
    * ;
    */
-  getAssignmentOperator(): string | null {
-    if (this._lookahead.type === SIMPLE_ASSIGNMENT) {
-      return this._eat(SIMPLE_ASSIGNMENT).value;
-    } else if (this._lookahead.type === COMPLEX_ASSIGNMENT) {
-      return this._eat(COMPLEX_ASSIGNMENT).value;
-    } else {
-      return null;
-    }
+  getAssignmentOperator(): string {
+    return this._lookahead.type === SIMPLE_ASSIGNMENT
+      ? this._eat(SIMPLE_ASSIGNMENT).value
+      : this._eat(COMPLEX_ASSIGNMENT).value;
   }
 
   /**
