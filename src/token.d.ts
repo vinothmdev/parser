@@ -17,10 +17,17 @@ export type Token = {
   declarations?: Token[];
   id?: Token;
   init?: Token | null;
-} & IfStatement;
+} & IfStatement &
+  Unary;
 
 type IfStatement = {
   test?: Token;
   consequent?: Token;
   alternate?: Token | null;
+};
+
+type Unary = {
+  type: string;
+  operator?: string;
+  argument?: Token;
 };

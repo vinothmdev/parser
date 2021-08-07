@@ -20,17 +20,21 @@ import {
   LET,
   LINE_TERMINATOR,
   LOGICAL_AND_OPERATOR,
+  LOGICAL_NOT,
   LOGICAL_OR_OPERATOR,
+  MINUS_OPERATOR,
   MULTIPLICATION_OPERATOR,
   NULL_LITERAL,
   NUMERIC_LITERAL,
   OPEN_BLOCK,
   OPEN_PARENTHESIS,
+  PLUS_OPERATOR,
   PROGRAM,
   RELATIONAL_OPERATOR,
   SIMPLE_ASSIGNMENT,
   STRING_LITERAL,
   TRUE,
+  UNARY_EXPRESSION,
   VAR,
   VARIABLE_DECLARATION,
   VARIABLE_DECLARATOR,
@@ -381,14 +385,52 @@ export class Parser {
   /**
    * binaryExpremultiplicativeExpressionssion:
    * : multiplicativeExpression
-   * | multiplicativeExpression OPERATOR Literal
+   * | multiplicativeExpression OPERATOR unaryExpression
    * ;
    */
   multiplicativeExpression(): Token {
     return this.binaryExpression(
       MULTIPLICATION_OPERATOR,
-      this.primaryExpression.bind(this)
+      this.unaryExpression.bind(this)
     );
+  }
+
+  /**
+   * unaryExpression:
+   * : unaryExpression
+   * | ! unaryExpression
+   * | - unaryExpression
+   * | + unaryExpression
+   * ;
+   */
+  unaryExpression(): Token {
+    let operator;
+    switch (this._lookahead.type) {
+      case LOGICAL_NOT:
+        operator = this._eat(LOGICAL_NOT);
+        break;
+      case ADD_OPERATOR:
+        operator = this._eat(ADD_OPERATOR);
+        break;
+    }
+
+    if (operator) {
+      return {
+        type: UNARY_EXPRESSION,
+        operator: operator.value,
+        argument: this.unaryExpression(),
+      };
+    }
+    return this.leftHandSideExpression();
+  }
+
+  /**
+   * lefthandsideExpression:
+   * : leftHandSideExpression
+   * ;
+   */
+  leftHandSideExpression(): Token {
+    return this.primaryExpression();
   }
 
   /**
@@ -399,12 +441,13 @@ export class Parser {
    * ;
    */
   primaryExpression(): Token {
-    if (this._lookahead.type === IDENTIFIER) {
-      return this.identifier();
-    } else if (this._lookahead.type === OPEN_PARENTHESIS) {
-      return this.parenthesisExpression();
-    } else {
-      return this.literal();
+    switch (this._lookahead.type) {
+      case IDENTIFIER:
+        return this.identifier();
+      case OPEN_PARENTHESIS:
+        return this.parenthesisExpression();
+      default:
+        return this.literal();
     }
   }
 

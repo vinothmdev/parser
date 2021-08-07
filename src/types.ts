@@ -5,6 +5,7 @@ export const BOOLEAN_LITERAL = "BooleanLiteral";
 export const NULL_LITERAL = "NullLiteral";
 export const BLOCK_STATEMENT = "BlockStatement";
 export const EXPRESSION_STATEMENT = "ExpressionStatement";
+export const UNARY_EXPRESSION = "UnaryExpression";
 export const EMPTY_STATE = "EmptyStatement";
 export const BINARY_EXPRESSION = "BinaryExpression";
 export const ASSIGNMENT_EXPRESSION = "AssignmentExpression";
@@ -33,6 +34,9 @@ export const RELATIONAL_OPERATOR = "RELATIONAL_OPERATOR";
 export const EQUALITY_OPERATOR = "EQUALITY_OPERATOR";
 export const LOGICAL_AND_OPERATOR = "LOGICAL_AND_OPERATOR";
 export const LOGICAL_OR_OPERATOR = "LOGICAL_OR_OPERATOR";
+export const LOGICAL_NOT = "LOGICAL_NOT";
+export const MINUS_OPERATOR = "MINUS_OPERATOR";
+export const PLUS_OPERATOR = "PLUS_OPERATOR";
 
 /**
  * keywords
@@ -79,6 +83,9 @@ export const TOKEN_TYPE_SPECS = [
   { type: OPEN_PARENTHESIS, pattern: /^\(/ },
   { type: CLOSE_PARENTHESIS, pattern: /^\)/ },
   { type: EQUALITY_OPERATOR, pattern: /^[!=]=/ },
+  { type: LOGICAL_NOT, pattern: /^!/ },
+  { type: PLUS_OPERATOR, pattern: /^\+/ },
+  { type: MINUS_OPERATOR, pattern: /^\-/ },
   { type: SIMPLE_ASSIGNMENT, pattern: /^=/ },
   { type: COMMA, pattern: /^,/ },
   { type: IDENTIFIER, pattern: /^\w+/ },
