@@ -38,6 +38,7 @@ import {
   VAR,
   VARIABLE_DECLARATION,
   VARIABLE_DECLARATOR,
+  WHILE_STATEMENT,
 } from "./types";
 
 /**
@@ -107,6 +108,8 @@ export class Parser {
         return this.declarationStatement(VAR);
       case IF_STATEMENT:
         return this.ifStatement();
+      case WHILE_STATEMENT:
+        return this.whileStatement();
       default:
         return this.expressionStatement();
     }
@@ -177,6 +180,24 @@ export class Parser {
       test: condition,
       consequent: consequent,
       alternate: alternate,
+    };
+  }
+
+  /**
+   * whileStatement:
+   * : while ( Expression ) StatementList
+   * ;
+   */
+  whileStatement(): Token {
+    this._eat(WHILE_STATEMENT);
+    this._eat(OPEN_PARENTHESIS);
+    const condition = this.assignmentExpression();
+    this._eat(CLOSE_PARENTHESIS);
+    const body = this.statement();
+    return {
+      type: WHILE_STATEMENT,
+      test: condition,
+      body: body,
     };
   }
 
