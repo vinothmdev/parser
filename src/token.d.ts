@@ -8,8 +8,8 @@ export type Token = {
   type: string;
   name?: string;
   value?: any;
-  body?: any;
-  expression?: Token;
+  body?: Token | Token[] | null;
+  expression?: Token | boolean;
   operator?: string | null;
   left?: Token;
   right?: Token | null;
@@ -19,7 +19,9 @@ export type Token = {
   init?: Token | null;
 } & IfStatement &
   Unary &
-  ForStatement;
+  ForStatement &
+  Partial<FunctionDeclaration> &
+  Partial<CallExpression>;
 
 type IfStatement = {
   test?: Token | null;
@@ -39,4 +41,20 @@ type ForStatement = {
   test?: Token | null;
   update?: Token | null;
   body?: any;
+};
+
+type FunctionDeclaration = {
+  type: string;
+  id: Token;
+  expression: Token | boolean;
+  generator: boolean;
+  async: boolean;
+  params?: Token[] | null;
+  body: Token | Token[] | null;
+};
+
+type CallExpression = {
+  callee: Token;
+  arguments: Token[] | null;
+  optional: boolean;
 };
