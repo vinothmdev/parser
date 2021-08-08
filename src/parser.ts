@@ -11,10 +11,12 @@ import {
   CLOSE_PARENTHESIS,
   COMMA,
   COMPLEX_ASSIGNMENT,
+  DO_STATEMENT,
   ELSE_STATEMENT,
   EMPTY_STATE,
   EQUALITY_OPERATOR,
   EXPRESSION_STATEMENT,
+  FOR_STATEMENT,
   IDENTIFIER,
   IF_STATEMENT,
   LET,
@@ -109,7 +111,9 @@ export class Parser {
       case IF_STATEMENT:
         return this.ifStatement();
       case WHILE_STATEMENT:
-        return this.whileStatement();
+      case DO_STATEMENT:
+      case FOR_STATEMENT:
+        return this.iteration();
       default:
         return this.expressionStatement();
     }
@@ -184,11 +188,69 @@ export class Parser {
   }
 
   /**
+   * iteration:
+   * : WHILE ( Expression ) StatementBlock
+   * | DO StatementBlock WHILE { Expression }
+   * | FOR ( ForInit ForExpr ForIncr ForEnd ) StatementBlock
+   * ;
+   */
+  iteration(): Token {
+    const type = this._lookahead.type;
+
+    if (type === WHILE_STATEMENT) {
+      return this.whileStatement();
+    } else if (type === DO_STATEMENT) {
+      return this.doStatement();
+    } else {
+      return this.forStatement();
+    }
+  }
+
+  /**
    * whileStatement:
-   * : while ( Expression ) StatementList
+   * : while ( assignmentExpression ) statement
    * ;
    */
   whileStatement(): Token {
+    this._eat(WHILE_STATEMENT);
+    this._eat(OPEN_PARENTHESIS);
+    const condition = this.assignmentExpression();
+    this._eat(CLOSE_PARENTHESIS);
+    const body = this.statement();
+    return {
+      type: WHILE_STATEMENT,
+      test: condition,
+      body: body,
+    };
+  }
+
+  /**
+   * doStatement:
+   * : DO statement WHILE { assignmentExpression }
+   * ;
+   */
+  doStatement(): Token {
+    this._eat(DO_STATEMENT);
+    const body = this.statement();
+    this._eat(WHILE_STATEMENT);
+    this._eat(OPEN_PARENTHESIS);
+    const condition = this.assignmentExpression();
+    this._eat(CLOSE_PARENTHESIS);
+    this._eat(LINE_TERMINATOR);
+
+    return {
+      type: DO_STATEMENT,
+      test: condition,
+      body: body,
+    };
+  }
+
+  /**
+   * forStatement:
+   * : FOR ( ForInit ForExpr ForIncr ForEnd ) StatementBlock
+   * ;
+   */
+  forStatement(): Token {
     this._eat(WHILE_STATEMENT);
     this._eat(OPEN_PARENTHESIS);
     const condition = this.assignmentExpression();
