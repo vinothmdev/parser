@@ -18,7 +18,8 @@ export type Token = {
   id?: Token;
   init?: Token | null;
 } & IfStatement &
-  Unary;
+  Unary &
+  ForStatement;
 
 type IfStatement = {
   test?: Token;
@@ -30,4 +31,12 @@ type Unary = {
   type: string;
   operator?: string;
   argument?: Token;
+};
+
+type ForStatement = {
+  type: string;
+  init?: Token | null;
+  test?: Token;
+  update?: Token;
+  body?: any;
 };

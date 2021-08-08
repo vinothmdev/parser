@@ -251,14 +251,19 @@ export class Parser {
    * ;
    */
   forStatement(): Token {
-    this._eat(WHILE_STATEMENT);
+    this._eat(FOR_STATEMENT);
     this._eat(OPEN_PARENTHESIS);
-    const condition = this.assignmentExpression();
+    const init = this.declarationStatement(this._lookahead.type);
+    const condition = this.expression();
+    this._eat(LINE_TERMINATOR);
+    const update = this.expression();
     this._eat(CLOSE_PARENTHESIS);
     const body = this.statement();
     return {
-      type: WHILE_STATEMENT,
+      type: FOR_STATEMENT,
+      init: init,
       test: condition,
+      update: update,
       body: body,
     };
   }
