@@ -22,7 +22,7 @@ export type Token = {
   ForStatement;
 
 type IfStatement = {
-  test?: Token;
+  test?: Token | null;
   consequent?: Token;
   alternate?: Token | null;
 };
@@ -36,7 +36,7 @@ type Unary = {
 type ForStatement = {
   type: string;
   init?: Token | null;
-  test?: Token;
-  update?: Token;
+  test?: Token | null;
+  update?: Token | null;
   body?: any;
 };

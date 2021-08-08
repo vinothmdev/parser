@@ -255,3 +255,52 @@ test("for loop", () => {
   let test = JSON.stringify(result);
   expect(result).toStrictEqual(expected_value);
 });
+
+test("for loop with empty expressions", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ForStatement",
+        init: null,
+        test: null,
+        update: null,
+        body: {
+          type: "BlockStatement",
+          body: [
+            {
+              type: "ExpressionStatement",
+              expression: {
+                type: "AssignmentExpression",
+                operator: "=",
+                left: { type: "Identifier", name: "x" },
+                right: { type: "NumericLiteral", value: 0 },
+              },
+            },
+            {
+              type: "ExpressionStatement",
+              expression: {
+                type: "AssignmentExpression",
+                operator: "=",
+                left: { type: "Identifier", name: "y" },
+                right: { type: "NumericLiteral", value: 0 },
+              },
+            },
+          ],
+        },
+      },
+    ],
+  };
+
+  const result = parser.parse(
+    `
+      for(; ;) {
+          x = 0;
+          y = 0;
+          // Test
+    }
+      `
+  );
+  let test = JSON.stringify(result);
+  expect(result).toStrictEqual(expected_value);
+});

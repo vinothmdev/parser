@@ -253,11 +253,9 @@ export class Parser {
   forStatement(): Token {
     this._eat(FOR_STATEMENT);
     this._eat(OPEN_PARENTHESIS);
-    const init = this.declarationStatement(this._lookahead.type);
-    const condition = this.expression();
-    this._eat(LINE_TERMINATOR);
-    const update = this.expression();
-    this._eat(CLOSE_PARENTHESIS);
+    let init = this.forInitializer();
+    const condition = this.forTest();
+    const update = this.forUpdater();
     const body = this.statement();
     return {
       type: FOR_STATEMENT,
@@ -266,6 +264,50 @@ export class Parser {
       update: update,
       body: body,
     };
+  }
+
+  /**
+   * forInitializer:
+   * : VariableDeclarationList
+   * | null
+   * ;
+   */
+  forInitializer(): Token | null {
+    if (this._lookahead.type !== LINE_TERMINATOR) {
+      return this.declarationStatement(this._lookahead.type);
+    }
+    this._eat(LINE_TERMINATOR);
+    return null;
+  }
+
+  /**
+   * forTest:
+   * : condition
+   * | null
+   * ;
+   */
+  forTest(): Token | null {
+    let condition = null;
+    if (this._lookahead.type !== LINE_TERMINATOR) {
+      condition = this.expression();
+    }
+    this._eat(LINE_TERMINATOR);
+    return condition;
+  }
+
+  /**
+   * forUpdater:
+   * : expression
+   * | null
+   * ;
+   */
+  forUpdater(): Token | null {
+    let updater = null;
+    if (this._lookahead.type !== CLOSE_PARENTHESIS) {
+      updater = this.expression();
+    }
+    this._eat(CLOSE_PARENTHESIS);
+    return updater;
   }
 
   /**
