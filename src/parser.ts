@@ -1,5 +1,5 @@
 import { EOF } from "dns";
-import { MemberExpression, Token } from "./token";
+import { CallExpression, MemberExpression, Token } from "./token";
 import { Tokenizer } from "./tokenizer";
 import {
   ADD_OPERATOR,
@@ -7,6 +7,7 @@ import {
   BINARY_EXPRESSION,
   BLOCK_STATEMENT,
   BOOLEAN_LITERAL,
+  CALL_EXPRESSION,
   CLOSE_BLOCK,
   CLOSE_PARENTHESIS,
   COMMA,
@@ -624,7 +625,61 @@ export class Parser {
    * ;
    */
   leftHandSideExpression(): Token {
-    return this.memberExpression();
+    return this.callMemberExpression();
+  }
+
+  /**
+   * callMemberExpression:
+   * : memberExpression
+   * | callExpression arguments
+   * ;
+   */
+  callMemberExpression(): Token {
+    const memberExpression = this.memberExpression();
+    if (this._lookahead.type === OPEN_PARENTHESIS) {
+      return this.callExpression(memberExpression);
+    }
+    return memberExpression;
+  }
+
+  /**
+   * callExpression:
+   * : callExpression
+   * | callExpression OPEN_PARENTHESIS arguments CLOSE_PARENTHESIS
+   * ;
+   */
+  callExpression(callee: Token): Token {
+    let _callExpression: CallExpression = {
+      type: CALL_EXPRESSION,
+      callee,
+      arguments: this.arguments(),
+      optional: false,
+    };
+    if (this._lookahead.type === OPEN_PARENTHESIS) {
+      _callExpression = {
+        type: CALL_EXPRESSION,
+        callee: _callExpression,
+        arguments: this.arguments(),
+        optional: false,
+      };
+    }
+    return _callExpression;
+  }
+
+  /**
+   * arguments:
+   * :
+   * | ( expression, expression, expression ...)
+   * ;
+   */
+  arguments(): Token[] {
+    const args = [];
+    this._eat(OPEN_PARENTHESIS);
+    do {
+      args.push(this.expression());
+    } while (this._lookahead.type === COMMA && this._eat(COMMA));
+    this._eat(CLOSE_PARENTHESIS);
+    return args;
   }
 
   /**

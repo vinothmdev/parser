@@ -19,6 +19,7 @@ export const DO_STATEMENT = "DoWhileStatement";
 export const FOR_STATEMENT = "ForStatement";
 export const FUNCTION_DECLARATION = "FunctionDeclaration";
 export const RETURN_STATEMENT = "ReturnStatement";
+export const CALL_EXPRESSION = "CallExpression";
 
 export const SKIP = null;
 export const WHITE_SPACE = SKIP;

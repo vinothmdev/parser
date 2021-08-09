@@ -22,6 +22,7 @@ export type Token = {
   ForStatement &
   Partial<FunctionDeclaration> &
   Partial<CallExpression> &
+  Partial<ReturnStatement> &
   Partial<MemberExpression>;
 
 type IfStatement = {
@@ -46,7 +47,7 @@ type ForStatement = {
 
 type FunctionDeclaration = {
   type: string;
-  id: Token;
+  id: Token | null;
   expression: Token | boolean;
   generator: boolean;
   async: boolean;
@@ -55,8 +56,9 @@ type FunctionDeclaration = {
 };
 
 type CallExpression = {
+  type: string;
   callee: Token;
-  argument: Token | null;
+  arguments: Token[];
   optional: boolean;
 };
 
@@ -66,4 +68,9 @@ type MemberExpression = {
   property: Token;
   computed: boolean;
   optional: boolean;
+};
+
+type ReturnStatement = {
+  type: string;
+  argument?: Token | null;
 };
