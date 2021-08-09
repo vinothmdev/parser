@@ -21,7 +21,8 @@ export type Token = {
   Unary &
   ForStatement &
   Partial<FunctionDeclaration> &
-  Partial<CallExpression>;
+  Partial<CallExpression> &
+  Partial<MemberExpression>;
 
 type IfStatement = {
   test?: Token | null;
@@ -56,5 +57,13 @@ type FunctionDeclaration = {
 type CallExpression = {
   callee: Token;
   argument: Token | null;
+  optional: boolean;
+};
+
+type MemberExpression = {
+  type: string;
+  object: Token;
+  property: Token;
+  computed: boolean;
   optional: boolean;
 };

@@ -8,6 +8,7 @@ export const EXPRESSION_STATEMENT = "ExpressionStatement";
 export const UNARY_EXPRESSION = "UnaryExpression";
 export const EMPTY_STATE = "EmptyStatement";
 export const BINARY_EXPRESSION = "BinaryExpression";
+export const MEMBER_EXPRESSION = "MemberExpression";
 export const ASSIGNMENT_EXPRESSION = "AssignmentExpression";
 export const VARIABLE_DECLARATOR = "VariableDeclarator";
 export const VARIABLE_DECLARATION = "VariableDeclaration";
@@ -42,6 +43,7 @@ export const LOGICAL_OR_OPERATOR = "LOGICAL_OR_OPERATOR";
 export const LOGICAL_NOT = "LOGICAL_NOT";
 export const MINUS_OPERATOR = "MINUS_OPERATOR";
 export const PLUS_OPERATOR = "PLUS_OPERATOR";
+export const MEMBER_OPERATOR = "MEMBER_OPERATOR";
 
 /**
  * keywords
@@ -78,6 +80,7 @@ export const TOKEN_TYPE_SPECS = [
   { type: FOR_STATEMENT, pattern: /^\bfor\b/ },
   { type: FUNCTION_DECLARATION, pattern: /^\bfunction\b/ },
   { type: RETURN_STATEMENT, pattern: /^\breturn\b/ },
+  { type: MEMBER_OPERATOR, pattern: /^[\.\[\]]/ },
   { type: LOGICAL_AND_OPERATOR, pattern: /^(&&)/ },
   { type: LOGICAL_OR_OPERATOR, pattern: /^(\|\|)/ },
   { type: WHITE_SPACE, pattern: /^\s+/ },

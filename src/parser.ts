@@ -1,5 +1,5 @@
 import { EOF } from "dns";
-import { Token } from "./token";
+import { MemberExpression, Token } from "./token";
 import { Tokenizer } from "./tokenizer";
 import {
   ADD_OPERATOR,
@@ -25,6 +25,8 @@ import {
   LOGICAL_AND_OPERATOR,
   LOGICAL_NOT,
   LOGICAL_OR_OPERATOR,
+  MEMBER_EXPRESSION,
+  MEMBER_OPERATOR,
   MINUS_OPERATOR,
   MULTIPLICATION_OPERATOR,
   NULL_LITERAL,
@@ -622,7 +624,61 @@ export class Parser {
    * ;
    */
   leftHandSideExpression(): Token {
-    return this.primaryExpression();
+    return this.memberExpression();
+  }
+
+  /**
+   * memberExpression:
+   * : memberExpression [ Expression ]
+   * | memberExpression . Identifier
+   * | primaryExpression
+   * ;
+   */
+  memberExpression(): Token {
+    let primary = this.primaryExpression();
+    while (this._lookahead.value === "." || this._lookahead.value === "[") {
+      primary =
+        this._lookahead.value === "."
+          ? this.nonComputedProperty(primary)
+          : this.computedProperty(primary);
+    }
+    return primary;
+  }
+
+  /**
+   * computedProperty:
+   * : [ Expression ]
+   * ;
+   */
+  computedProperty(object: Token): MemberExpression {
+    this._eat(MEMBER_OPERATOR);
+    const property = this.expression();
+    this._eat(MEMBER_OPERATOR);
+    return {
+      type: MEMBER_EXPRESSION,
+      object,
+      property,
+      computed: true,
+      optional: false,
+    };
+  }
+
+  /**
+   * nonComputedProperty:
+   * : Identifier
+   * | Literal
+   * ;
+   */
+  nonComputedProperty(object: Token): MemberExpression {
+    this._eat(MEMBER_OPERATOR);
+    const property = this.identifier();
+    return {
+      type: MEMBER_EXPRESSION,
+      object,
+      property,
+      computed: false,
+      optional: false,
+    };
   }
 
   /**
@@ -733,7 +789,9 @@ export class Parser {
     const token = this._lookahead;
 
     if (!token || token.type !== type) {
-      throw new Error(`unexpected EOF, expected '${type}'`);
+      throw new Error(
+        `unexpected EOF, expected '${type}' received '${token.value}'`
+      );
     }
 
     // Advance to the next token
