@@ -2,7 +2,7 @@
   "name": "parser",
   "version": "1.0.0",
   "description": "This is to try out a parser from scratch",
-  "main": "parser.js",
+  "main": "./src/index.ts",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage"
