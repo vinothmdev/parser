@@ -20,6 +20,7 @@ export const FOR_STATEMENT = "ForStatement";
 export const FUNCTION_DECLARATION = "FunctionDeclaration";
 export const RETURN_STATEMENT = "ReturnStatement";
 export const CALL_EXPRESSION = "CallExpression";
+export const LAMBDA_EXPRESSION = "ArrowFunctionExpression";
 
 export const SKIP = null;
 export const WHITE_SPACE = SKIP;
@@ -91,6 +92,7 @@ export const TOKEN_TYPE_SPECS = [
   { type: LINE_TERMINATOR, pattern: /^[;]/ },
   { type: OPEN_BLOCK, pattern: /^{/ },
   { type: CLOSE_BLOCK, pattern: /^}/ },
+  { type: LAMBDA_EXPRESSION, pattern: /^(=>)/ },
   { type: COMPLEX_ASSIGNMENT, pattern: /^(\+=|\-=|\*=|\/=)/ },
   { type: ADD_OPERATOR, pattern: /^[\+|-]/ },
   { type: MULTIPLICATION_OPERATOR, pattern: /^[\*|\/]/ },

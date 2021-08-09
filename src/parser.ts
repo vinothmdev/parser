@@ -21,6 +21,7 @@ import {
   FUNCTION_DECLARATION,
   IDENTIFIER,
   IF_STATEMENT,
+  LAMBDA_EXPRESSION,
   LET,
   LINE_TERMINATOR,
   LOGICAL_AND_OPERATOR,
@@ -643,6 +644,35 @@ export class Parser {
   }
 
   /**
+   * lambdaExpression:
+   * : ( ) => { functionBody}
+   * | ( parameterList ) => { functionBody }
+   * | paranthesisExpression
+   * ;
+   */
+  lambdaExpression(params: Token[]): Token {
+    while (this._lookahead.type !== CLOSE_PARENTHESIS) {
+      params.push(this.expression());
+      if (this._lookahead.type === COMMA) {
+        this._eat(COMMA);
+      }
+    }
+
+    this._eat(CLOSE_PARENTHESIS);
+    this._eat(LAMBDA_EXPRESSION);
+    const body = this.blockStatement();
+    return {
+      type: LAMBDA_EXPRESSION,
+      params,
+      body,
+      id: null,
+      async: false,
+      expression: false,
+      generator: false,
+    };
+  }
+
+  /**
    * callExpression:
    * : callExpression
    * | callExpression OPEN_PARENTHESIS arguments CLOSE_PARENTHESIS
@@ -748,7 +778,7 @@ export class Parser {
       case IDENTIFIER:
         return this.identifier();
       case OPEN_PARENTHESIS:
-        return this.parenthesisExpression();
+        return this.rightHandSideExpression();
       default:
         return this.literal();
     }
@@ -823,14 +853,38 @@ export class Parser {
     const token = this._eat(NULL_LITERAL);
     return { type: NULL_LITERAL, value: null };
   }
+
+  /**
+   * rightHandSideExpression:
+   * : lamdaExpression
+   * | paranethesisExpression
+   * ;
+   */
+  rightHandSideExpression(): Token {
+    let expression = this.parenthesisExpression();
+    if (!!expression && this._lookahead.type !== COMMA) {
+      return expression;
+    }
+    if (this._lookahead.type === COMMA) {
+      this._eat(COMMA);
+    }
+    return this.lambdaExpression(!!expression ? [expression] : []);
+  }
+
   /**
    * parenthesisExpression:
    * : OPEN_PARENTHESIS expression CLOSE_PARENTHESIS
    * ;
    */
-  parenthesisExpression(): Token {
+  parenthesisExpression(): Token | null {
     this._eat(OPEN_PARENTHESIS);
+    if (this._lookahead.type === CLOSE_PARENTHESIS) {
+      return null;
+    }
     const expression = this.expression();
+    if (this._lookahead.type === COMMA) {
+      return expression;
+    }
     this._eat(CLOSE_PARENTHESIS);
     return expression;
   }

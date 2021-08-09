@@ -15,7 +15,7 @@ export type Token = {
   right?: Token | null;
   kind?: string;
   declarations?: Token[];
-  id?: Token;
+  id?: Token | null;
   init?: Token | null;
 } & IfStatement &
   Unary &
@@ -23,6 +23,7 @@ export type Token = {
   Partial<FunctionDeclaration> &
   Partial<CallExpression> &
   Partial<ReturnStatement> &
+  Partial<ArrowFunctionExpression> &
   Partial<MemberExpression>;
 
 type IfStatement = {
@@ -73,4 +74,14 @@ type MemberExpression = {
 type ReturnStatement = {
   type: string;
   argument?: Token | null;
+};
+
+type ArrowFunctionExpression = {
+  type: string;
+  id: Token | null;
+  expression: Token | boolean;
+  generator: boolean;
+  async: boolean;
+  params: Token[];
+  body: Token | Token[] | null;
 };
