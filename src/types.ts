@@ -16,6 +16,8 @@ export const ELSE_STATEMENT = "ElseStatement";
 export const WHILE_STATEMENT = "WhileStatement";
 export const DO_STATEMENT = "DoWhileStatement";
 export const FOR_STATEMENT = "ForStatement";
+export const FUNCTION_DECLARATION = "FunctionDeclaration";
+export const RETURN_STATEMENT = "ReturnStatement";
 
 export const SKIP = null;
 export const WHITE_SPACE = SKIP;
@@ -74,6 +76,8 @@ export const TOKEN_TYPE_SPECS = [
   { type: DO_STATEMENT, pattern: /^\bdo\b/ },
   { type: WHILE_STATEMENT, pattern: /^\bwhile\b/ },
   { type: FOR_STATEMENT, pattern: /^\bfor\b/ },
+  { type: FUNCTION_DECLARATION, pattern: /^\bfunction\b/ },
+  { type: RETURN_STATEMENT, pattern: /^\breturn\b/ },
   { type: LOGICAL_AND_OPERATOR, pattern: /^(&&)/ },
   { type: LOGICAL_OR_OPERATOR, pattern: /^(\|\|)/ },
   { type: WHITE_SPACE, pattern: /^\s+/ },

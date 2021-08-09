@@ -17,6 +17,7 @@ import {
   EQUALITY_OPERATOR,
   EXPRESSION_STATEMENT,
   FOR_STATEMENT,
+  FUNCTION_DECLARATION,
   IDENTIFIER,
   IF_STATEMENT,
   LET,
@@ -33,6 +34,7 @@ import {
   PLUS_OPERATOR,
   PROGRAM,
   RELATIONAL_OPERATOR,
+  RETURN_STATEMENT,
   SIMPLE_ASSIGNMENT,
   STRING_LITERAL,
   TRUE,
@@ -96,6 +98,11 @@ export class Parser {
    * statement:
    * : ExpressionStatement
    * | BlockStatement
+   * | declarationStatement
+   * | ifStatement
+   * | iteration
+   * | emptyStatement
+   * | functionDeclaration
    * ;
    */
   statement(): Token {
@@ -105,15 +112,18 @@ export class Parser {
       case LINE_TERMINATOR:
         return this.emptyStatement();
       case LET:
-        return this.declarationStatement(LET);
       case VAR:
-        return this.declarationStatement(VAR);
+        return this.declarationStatement(this._lookahead.type);
       case IF_STATEMENT:
         return this.ifStatement();
       case WHILE_STATEMENT:
       case DO_STATEMENT:
       case FOR_STATEMENT:
         return this.iteration();
+      case FUNCTION_DECLARATION:
+        return this.functionDeclaration();
+      case RETURN_STATEMENT:
+        return this.returnStatement();
       default:
         return this.expressionStatement();
     }
@@ -138,6 +148,19 @@ export class Parser {
     const statements = this.statementList(CLOSE_BLOCK);
     this._eat(CLOSE_BLOCK);
     return { type: BLOCK_STATEMENT, body: statements };
+  }
+
+  /**
+   * returnStatement:
+   * : RETURN Expression
+   * ;
+   */
+  returnStatement(): Token {
+    this._eat(RETURN_STATEMENT);
+    const expression =
+      this._lookahead.type !== LINE_TERMINATOR ? this.expression() : null;
+    this._eat(LINE_TERMINATOR);
+    return { type: RETURN_STATEMENT, argument: expression };
   }
 
   /**
@@ -206,6 +229,45 @@ export class Parser {
     }
   }
 
+  /**
+   * functionDeclaration:
+   * : function IDENTIFIER ( ParameterList ) Block
+   * ; function IDENTIFIER ( ) Block
+   * ;
+   */
+  functionDeclaration(): Token {
+    this._eat(FUNCTION_DECLARATION);
+    const id = this.identifier();
+    const params = this.parameterList();
+    const body = this.blockStatement();
+    return {
+      type: FUNCTION_DECLARATION,
+      id,
+      params,
+      body,
+      expression: false,
+      generator: false,
+      async: false,
+    };
+  }
+
+  /**
+   * parameterList:
+   * : OPEN_PARENTHESIS Parameter ( COMMA Parameter ) * CLOSE_PARENTHESIS
+   * ;
+   */
+  parameterList(): Token[] {
+    this._eat(OPEN_PARENTHESIS);
+    const params: Token[] = [];
+    while (this._lookahead.type !== CLOSE_PARENTHESIS) {
+      params.push(this.identifier());
+      if (this._lookahead.type === COMMA) {
+        this._eat(COMMA);
+      }
+    }
+    this._eat(CLOSE_PARENTHESIS);
+    return params;
+  }
   /**
    * whileStatement:
    * : while ( assignmentExpression ) statement

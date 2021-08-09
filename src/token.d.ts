@@ -32,7 +32,7 @@ type IfStatement = {
 type Unary = {
   type: string;
   operator?: string;
-  argument?: Token;
+  argument?: Token | null;
 };
 
 type ForStatement = {
@@ -55,6 +55,6 @@ type FunctionDeclaration = {
 
 type CallExpression = {
   callee: Token;
-  arguments: Token[] | null;
+  argument: Token | null;
   optional: boolean;
 };
