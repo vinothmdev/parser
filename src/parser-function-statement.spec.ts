@@ -364,7 +364,7 @@ test("Chained function call", () => {
   expect(result).toStrictEqual(expected_value);
 });
 
-test("Chained function call", () => {
+test("member function call", () => {
   const expected_value = {
     type: "Program",
     body: [
@@ -398,6 +398,74 @@ test("Chained function call", () => {
   };
 
   const result = parser.parse(`console.log(a);`);
+  expect(result).toStrictEqual(expected_value);
+});
+
+test("function call with expression in argument", () => {
+  const expected_value = {
+    type: "Program",
+    body: [
+      {
+        type: "ExpressionStatement",
+        expression: {
+          type: "CallExpression",
+          callee: {
+            type: "Identifier",
+            name: "sum",
+          },
+          arguments: [
+            {
+              type: "CallExpression",
+              callee: {
+                type: "Identifier",
+                name: "sum",
+              },
+              arguments: [
+                {
+                  type: "Identifier",
+                  name: "x",
+                },
+                {
+                  type: "Identifier",
+                  name: "y",
+                },
+              ],
+              optional: false,
+            },
+            {
+              type: "AssignmentExpression",
+              operator: "=",
+              left: {
+                type: "Identifier",
+                name: "b",
+              },
+              right: {
+                type: "CallExpression",
+                callee: {
+                  type: "Identifier",
+                  name: "sum",
+                },
+                arguments: [
+                  {
+                    type: "Identifier",
+                    name: "y",
+                  },
+                  {
+                    type: "Identifier",
+                    name: "z",
+                  },
+                ],
+                optional: false,
+              },
+            },
+          ],
+          optional: false,
+        },
+      },
+    ],
+  };
+
+  const result = parser.parse(`sum(sum(x,y), b = sum(y,z));`);
   expect(result).toStrictEqual(expected_value);
 });
 
