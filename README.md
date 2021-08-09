@@ -1,4 +1,4 @@
-# parser
+# Parser
 
 Simple parser created for learning purposes.
 
