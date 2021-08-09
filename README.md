@@ -50,3 +50,6 @@ Code coverage is tested by
   ]
 }
 ```
+
+# Reference
+1. Building a Parser from Scratch, By [Dmitry Soshnikov](http://dmitrysoshnikov.com/)
