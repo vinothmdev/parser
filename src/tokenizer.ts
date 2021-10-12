@@ -1,6 +1,5 @@
-import { EOF } from "dns";
 import { Token } from "./token";
-import { SKIP, TOKEN_TYPE_SPECS, UNDEFINED } from "./types";
+import { SKIP, TOKEN_TYPE_SPECS, UNDEFINED, EOF } from "./types";
 
 /**
  * Tokenizer:
